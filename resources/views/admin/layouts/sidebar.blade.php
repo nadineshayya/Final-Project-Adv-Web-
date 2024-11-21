@@ -5,7 +5,7 @@
                     <a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="categories.html"><i class="fas fa-file-alt"></i> Category</a>
+                    <a class="nav-link" href="{{route('categories.index')}}"><i class="fas fa-file-alt"></i> Category</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="brands.html"><i class="fas fa-tags"></i> Brands</a>
