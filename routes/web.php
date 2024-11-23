@@ -8,10 +8,10 @@ use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\admin\SubCategoryController ;
 use App\Http\Controllers\admin\ProductController ;
 use App\Http\Controllers\admin\ProductSubCategoryController ;
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\admin\ProductImageController ;
+use App\Http\Controllers\Frontcontroller;
 
+Route::get('/', [Frontcontroller::class,'index'])->name('front.home');
 
 
 
@@ -44,16 +44,26 @@ Route::group(['prefix' => 'admin'], function() {
 
 
 
-        Route::post('/upload-temp-image', [CategoryController::class, 'create'])->name('temp-images.create');
+        Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
      
         Route::put('/sub-categories/{subcategory}/update', [SubCategoryController::class, 'update'])->name('sub-categories.update');
 
         Route::delete('/sub-categories/{id}', [SubCategoryController::class, 'destroy'])->name('sub-categories.destroy');
 
         Route::get('/product-subcategories', [ProductSubCategoryController::class, 'index'])->name('product-subcategories.index');
-
-       
+        Route::post('/products/store', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+        
         Route::get('/products/create',[ProductController::class, 'create'])->name('products.create');
+        Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+
+        Route::post('/product-images/update', [ProdutImageController::class, 'update'])->name('product-images.update');
+        Route::delete('/product-images/{image}', [ProductImageController::class, 'destroyImage'])->name('product-images.destroy');
+
+      
         Route::get('/getSlug',function(Request $request){
             $slug='';
             if(!empty($request->title)){

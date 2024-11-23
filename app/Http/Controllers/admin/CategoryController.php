@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Category;
 use App\Models\TempImage;
-use Illuminate\Support\Facades\File;
+
 
 
 class CategoryController extends Controller
@@ -28,46 +28,36 @@ class CategoryController extends Controller
     return view('admin.category.create');
    }
    
-  public function store(Request $request) {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required',
-        'slug' => 'required|unique:categories',
-    ]);
+   public function store(Request $request)
+    {
+        // Validate incoming data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories',
+            'status' => 'required|boolean',
+            'image_id' => 'nullable|exists:temp_images,id',  // Ensure that the image_id exists in the temp_images table
+        ]);
 
-    if ($validator->fails()) {
+        // Create the category
+        $category = new Category();
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->status = $request->status;
+
+        // Check if there is an image and assign the image_id to the category
+        if ($request->has('image_id')) {
+            $category->image = $request->image_id;  // Save the temp image ID to the 'image' column in the categories table
+        }
+
+        // Save the category
+        $category->save();
+
+        // Return a response
         return response()->json([
-            'status' => false,
-            'errors' => $validator->errors(),
+            'status' => true,
+            'message' => 'Category created successfully!',
         ]);
     }
-
-    $category = new Category();
-    $category->name = $request->name;
-    $category->slug = $request->slug;
-    $category->status = $request->status ?? 0;
-    $category->save();
-    
-    if(!empty($request->image_id)){
-        $tempImage = TempImage::find($request->image_id);
-        $extArray = explode('.',$tempImage->name);
-        $ext = last($extArray);
-
-        $newImageName = $category->id.'.'.$ext;
-        $isPath = public_path().'/temp/'.$tempImage->name;
-        $dPath = public_path().'/uploads/category/'.$newImageName;
-        File::copy( $isPath, $dPath);
-
-       
-        $category->image =$newImageName;
-        $category->save();
-    }
-
-    $request->session()->flash('success', 'Category added successfully');
-    return response()->json([
-        'status' => true,
-        'message' => 'Category created successfully!',
-    ]);
-}
 
    public function edit($categoryId , Request $request){
    
@@ -160,5 +150,6 @@ public function destroy($id)
         'message' => 'Category deleted successfully!',
     ]);
 }
+    
 
 }

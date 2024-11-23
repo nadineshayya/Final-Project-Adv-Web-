@@ -18,10 +18,12 @@
 <!-- Dropzone CSS from CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
 
-<!-- Dropzone JS from CDN -->
+<!-- Dropzone JS from CDN --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
-<link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script type="text\javascript">
 

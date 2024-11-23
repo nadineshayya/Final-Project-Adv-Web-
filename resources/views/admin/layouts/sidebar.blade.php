@@ -2,16 +2,14 @@
         <nav class="sidebar flex-shrink-0 p-3">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a class="nav-link" href=""><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('categories.index')}}"><i class="fas fa-file-alt"></i> Category</a>
                 </li>
+                
                 <li class="nav-item">
-                    <a class="nav-link" href="brands.html"><i class="fas fa-tags"></i> Brands</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="products.html"><i class="fas fa-tag"></i> Products</a>
+                    <a class="nav-link" href="{{route('products.index')}}"><i class="fas fa-tag"></i> Products</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a>

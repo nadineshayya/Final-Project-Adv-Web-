@@ -26,8 +26,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div><div id="product-gallery" class="d-flex flex-wrap"></div>
 
+
+
+                </div>
                
 
                 <div class="col-md-6">
@@ -161,21 +164,38 @@ $(document).ready(function () {
                 }
             });
         });
-        Dropzone.autoDiscover = false;
-
-$(document).ready(function () {
-    // Initialize Dropzone
+        $(document).ready(function () {
+    console.log('Initializing Dropzone...');
     $("#image-upload").dropzone({
         url: "{{ route('temp-images.create') }}",
         maxFiles: 1,
         paramName: 'image',
         addRemoveLinks: true,
         acceptedFiles: "image/jpg, image/png, image/gif",
-        success: function (file, response) {
-            $("#image_id").val(response.image_id);
+        addedfile: function(file) {
+            console.log('File added to Dropzone:', file);  // Log the file object to see if it's recognized
         },
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+        success: function (file, response) {
+            console.log('Dropzone success callback triggered');
+            console.log('Response:', response);
+            if (response.status) {
+                console.log('Image URL:', response.ImagePath);
+                $('#product-gallery').append(`
+                    <div class="card m-2" style="width: 150px;" data-id="${response.image_id}">
+                       <input type="hidden" name="image-array" value="${response.image_id}">
+                    <img src="${response.ImagePath}" class="card-img-top" alt="Uploaded Image">
+                        <div class="card-body text-center">
+                            <button class="btn btn-danger btn-sm remove-image">Remove</button>
+                        </div>
+                    </div>
+                `);
+                console.log('Image appended to #product-gallery');
+            } else {
+                alert(response.message);
+            }
         }
     });
 });
