@@ -19,13 +19,4 @@ class AdminAuthenticate extends Middleware
 
         $this->unauthenticated($request, ['admin']);
     }
-
-    public function handle(Request $request, Closure $next)
-    {
-        if (!Auth::guard('admin')->check()) {
-            return redirect()->route('admin.login');
-        }
-
-        return $next($request);
-    }
 }

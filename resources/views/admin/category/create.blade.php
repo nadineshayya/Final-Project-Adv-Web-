@@ -1,144 +1,204 @@
 @extends('admin.layouts.app')
 
 @section('content')
-
-<style>
-    .dashboard-heading-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background-color: #003f88;
-        color: white;
-        padding: 20px;
-        margin: 0;
-        width: 100%;
-        border-radius: 0; /* No rounded corners */
-    }
-
-    .profile-container {
-        display: flex;
-        align-items: center;
-    }
-
-    .profile-container img.profile-icon {
-        width: 60px;
-        height: 60px;
-        margin-right: 15px;
-        background-color: transparent; /* Remove background */
-        border: none; /* Remove white square */
-    }
-
-    .dashboard-title {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin: 0;
-        flex-grow: 1;
-        text-align: left; /* Align title to the left */
-        margin-left: 20px; /* Push title slightly more to the left */
-    }
-
-    .action-buttons {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        margin-left: auto; /* Push buttons to the right */
-        padding-right: 150px; /* Adjust button placement */
-    }
-
-    .action-buttons button,
-    .action-buttons a {
-        margin-left: 15px; /* Spacing between buttons */
-    }
-</style>
-
-<div class="dashboard-heading-container full-width">
-    <div class="profile-container">
-        <img src="{{ asset('images/dashboard profile.png') }}" alt="Admin Profile" class="profile-icon">
-    </div>
-    <h1 class="dashboard-title">Create Category</h1>
-    <div class="col-sm-6 text-right">
-        <a href="categories.html" class="btn btn-primary">Back</a>
-    </div>
-</div>
-
-<section class="content">
-    <form action="{{ route('categories.store') }}" method="POST" id="categoryForm" name="categoryForm">
-        @csrf
-        <div class="card mt-4">
-            <div class="card-body">
-                <!-- Name and Slug Fields -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="name">Category Name</label>
-                            <input type="text" name="name" id="name" class="form-control" placeholder="Enter Category Name" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="slug">Category Slug</label>
-                            <input type="text" name="slug" id="slug" class="form-control" placeholder="Enter Category Slug" required>
-                        </div>
+<h1>Create Category</h1>
+<div class="content-wrapper">
+<form action="{{ route('categories.index') }}" method="POST" id="categoryForm" name="categoryForm">
+    @csrf
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Name">
                     </div>
                 </div>
 
-                <!-- Status Field with Buttons -->
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select name="status" id="status" class="form-control">
-                                <option value="1">Active</option>
-                                <option value="0">Blocked</option>
-                            </select>
+                <!-- Dropzone -->
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <input type="hidden" id="image_id" name="image_id" value="">
+                        <label for="image">Upload Image</label>
+                        <div class="dropzone" id="image-upload">
+                            <div class="dz-message needsclick">
+                                Drop files here or click to upload.
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6 action-buttons">
-                        <button type="submit" class="btn btn-primary">Create</button>
-                        <a href="#" class="btn btn-secondary">Cancel</a>
+                </div><div id="product-gallery" class="d-flex flex-wrap"></div>
+
+
+
+                </div>
+               
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="slug">Slug</label>
+                        <input type="text" name="slug" id="slug" class="form-control" placeholder="Slug">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="status">Status</label>
+                        <select name="status" id="status" class="form-control">
+                            <option value="1">Active</option>
+                            <option value="0">Blocked</option>
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
-</section>
+    </div>
 
+    <div class="pb-5 pt-3">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a href="{{ route('categories.index') }}" class="btn btn-outline-dark ml-3">Cancel</a>
+    </div>
+</form>
+
+@endsection
+
+@section('customJs')
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-    $("#categoryForm").submit(function(event) {
+ Dropzone.autoDiscover = false;
+
+$(document).ready(function () {
+    const dropzone = new Dropzone("#image-upload", {
+        url: "{{ route('temp-images.create') }}",
+        maxFiles: 1,
+        paramName: "image",
+        acceptedFiles: "image/*",  // Restrict to image types
+        addRemoveLinks: true,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(file, response) {
+            // Store the image ID in the hidden input field
+            $("#image_id").val(response.image_id);
+        },
+        removedfile: function(file) {
+            // Clear the image_id when the file is removed
+            $("#image_id").val('');
+        },
+    });
+
+    // Handle form submission via AJAX
+    $('#categoryForm').submit(function (event) {
         event.preventDefault();
-        var element = $(this);
+
+        // Get form data including the Dropzone file
+        var formData = new FormData(this);  // Use FormData to include the file
+        $("button[type=submit]").prop('disabled', true);
+
         $.ajax({
             url: '{{ route("categories.store") }}',
-            type: 'post',
-            data: element.serializeArray(),
+            type: 'POST',
+            data: formData,
             dataType: 'json',
-            success: function(response) {
-                var errors = response['errors'];
-                if (errors['name']) {
-                    $('#name').addClass('is-invalid')
-                        .siblings('p')
-                        .addClass('invalid-feedback').html(errors['name']);
-                } else {
-                    $('#name').removeClass('is-invalid')
-                        .siblings('p')
-                        .removeClass('invalid-feedback').html("");
-                }
+            processData: false,  // Don't process the data
+            contentType: false,  // Set the content type to false to allow FormData
+            success: function (response) {
+                $("button[type=submit]").prop('disabled', false);
+                $('#categoryForm').find('.is-invalid').removeClass('is-invalid');
+                $('#categoryForm').find('.invalid-feedback').html('');
 
-                if (errors['slug']) {
-                    $('#slug').addClass('is-invalid')
-                        .siblings('p')
-                        .addClass('invalid-feedback').html(errors['slug']);
+                if (!response.status) {
+                    // Display validation errors
+                    if (response.errors.name) {
+                        $('#name').addClass('is-invalid').next('.invalid-feedback').html(response.errors.name.join(', '));
+                    }
+                    if (response.errors.slug) {
+                        $('#slug').addClass('is-invalid').next('.invalid-feedback').html(response.errors.slug.join(', '));
+                    }
                 } else {
-                    $('#slug').removeClass('is-invalid')
-                        .siblings('p')
-                        .removeClass('invalid-feedback').html("");
+                    // Success - show message and redirect
+                    alert(response.message);
+                    window.location.href = '{{ route("categories.index") }}';
                 }
             },
-            error: function(jqXHR, exception) {
-                console.log("Something went wrong");
+            error: function (xhr) {
+                console.error(xhr.responseText);
             }
         });
     });
-</script>
+});
 
+        // Handle form submission via AJAX
+        $('#categoryForm').submit(function (event) {
+            event.preventDefault();
+            
+            // Get form data
+            var formData = $(this).serialize();
+            $("button[type=submit]").prop('disabled', true);
+            // AJAX request to store category
+            $.ajax({
+                url: '{{ route("categories.store") }}',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function (response) {
+                    $("button[type=submit]").prop('disabled', false);
+                    $('#categoryForm').find('.is-invalid').removeClass('is-invalid');
+                    $('#categoryForm').find('.invalid-feedback').html('');
+
+                    if (!response.status) {
+                        // Display validation errors
+                        if (response.errors.name) {
+                            $('#name').addClass('is-invalid').next('.invalid-feedback').html(response.errors.name.join(', '));
+                        }
+                        if (response.errors.slug) {
+                            $('#slug').addClass('is-invalid').next('.invalid-feedback').html(response.errors.slug.join(', '));
+                        }
+                    } else {
+                        // Success - show message and redirect
+                        alert(response.message);
+                        window.location.href = '{{ route("categories.index") }}';
+                    }
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+        $(document).ready(function () {
+    console.log('Initializing Dropzone...');
+    $("#image-upload").dropzone({
+        url: "{{ route('temp-images.create') }}",
+        maxFiles: 1,
+        paramName: 'image',
+        addRemoveLinks: true,
+        acceptedFiles: "image/jpg, image/png, image/gif",
+        addedfile: function(file) {
+            console.log('File added to Dropzone:', file);  // Log the file object to see if it's recognized
+        },
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+        success: function (file, response) {
+            console.log('Dropzone success callback triggered');
+            console.log('Response:', response);
+            if (response.status) {
+                console.log('Image URL:', response.ImagePath);
+                $('#product-gallery').append(`
+                    <div class="card m-2" style="width: 150px;" data-id="${response.image_id}">
+                       <input type="hidden" name="image-array" value="${response.image_id}">
+                    <img src="${response.ImagePath}" class="card-img-top" alt="Uploaded Image">
+                        <div class="card-body text-center">
+                            <button class="btn btn-danger btn-sm remove-image">Remove</button>
+                        </div>
+                    </div>
+                `);
+                console.log('Image appended to #product-gallery');
+            } else {
+                alert(response.message);
+            }
+        }
+    });
+});
+
+</script>
 @endsection
