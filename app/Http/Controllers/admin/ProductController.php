@@ -18,7 +18,7 @@ class ProductController extends Controller
 {
 
     public function index(Request $request){
-        $products = Product::latest('id')->with('productsImages');
+        $products = Product::latest('id')->with('product_images');
         
         if(!empty($request->get('keyword'))){
             $products = $products->where('title', 'like', '%'.$request->get('keyword').'%');
@@ -81,6 +81,8 @@ class ProductController extends Controller
             $product->category_id = $request->category;
             $product->sub_category_id = $request->sub_category;
             $product->is_featured = $request->is_featured;
+            $product->shipping_returns = $request->shipping_returns;
+            $product->short_description = $request->short_description;
     
             $product->save();
     
@@ -166,7 +168,8 @@ class ProductController extends Controller
             'track_qty' => 'required|in:Yes,No',
             'category' => 'required|numeric',
             'is_featured' => 'required|in:Yes,No',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image validation
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+             // Image validation
         ];
     
         if ($request->track_qty === 'Yes') {
@@ -195,6 +198,8 @@ class ProductController extends Controller
             $product->category_id = $request->category;
             $product->sub_category_id = $request->sub_category;
             $product->is_featured = $request->is_featured;
+            $product->shipping_returns = $request->shipping_returns;
+            $product->short_description = $request->short_description;
     
             $product->save();
     
@@ -239,6 +244,7 @@ class ProductController extends Controller
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
 
 
 

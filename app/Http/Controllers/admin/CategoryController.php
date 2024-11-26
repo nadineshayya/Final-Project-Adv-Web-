@@ -43,6 +43,7 @@ class CategoryController extends Controller
         $category->name = $request->name;
         $category->slug = $request->slug;
         $category->status = $request->status;
+        $category->showHome = $request->showHome;
 
         // Check if there is an image and assign the image_id to the category
         if ($request->has('image_id')) {
@@ -97,6 +98,7 @@ class CategoryController extends Controller
     $category->name = $request->name;
     $category->slug = $request->slug;
     $category->status = $request->status ?? 0;
+    $category->showHome = $request->showHome;
 
     // Handle image update
     if (!empty($request->image_id)) {

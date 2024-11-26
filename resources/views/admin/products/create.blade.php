@@ -40,6 +40,16 @@
                                     <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Description"></textarea>
                                     <div class="invalid-feedback"></div>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="description">Short Description</label>
+                                    <textarea name="short_description" id="short_description" cols="30" rows="10" class="form-control" placeholder="Short Description"></textarea>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description">Shipping & Returns</label>
+                                    <textarea name="shipping_returns" id="shipping_returns" cols="30" rows="10" class="form-control" placeholder="Shipping & Returns"></textarea>
+                                    <div class="invalid-feedback"></div>
+                                </div>
                             </div>
                         </div>
 
