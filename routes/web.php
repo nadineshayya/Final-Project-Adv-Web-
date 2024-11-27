@@ -10,8 +10,41 @@ use App\Http\Controllers\admin\ProductController ;
 use App\Http\Controllers\admin\ProductSubCategoryController ;
 use App\Http\Controllers\admin\ProductImageController ;
 use App\Http\Controllers\Frontcontroller;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\admin\DiscountCodeController;
 
 Route::get('/', [Frontcontroller::class,'index'])->name('front.home');
+Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class,'index'])->name('front.shop');
+Route::get('/product/{slug}', [ShopController::class,'product'])->name('front.product');
+Route::get('/cart', [CartController::class,'cart'])->name('front.cart');
+Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.addToCart');
+Route::delete('/cart/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/update', [CartController::class, 'updateQuantity'])->name('front.updateQuantity');
+Route::get('/checkout',  [CartController::class, 'checkout'])->name('front.checkout');
+Route::post('/process-checkout',  [CartController::class, 'processCheckout'])->name('front.processCheckout');
+Route::get('/thank-you/{id}', [CartController::class, 'thankyou'])->name('front.thankyou');
+Route::get('/profile', [AuthController::class,'profile'])->name('account.profile');
+
+Route::post('/apply-discount', [CartController::class, 'applyDiscount'])->name('front.applyDiscount');
+
+Route::group(['prefix' => 'account'], function() {
+    Route::group(['Middleware' => 'guest'], function() {
+        Route::get('/login', [AuthController::class,'login'])->name('account.login');
+        Route::get('/register', [AuthController::class,'register'])->name('account.register');
+        Route::post('/process-register', [AuthController::class,'processRegister'])->name('account.processRegister');
+        Route::post('/login', [AuthController::class,'authenticate'])->name('account.authenticate');
+        Route::get('/logout', [AuthController::class,'logout'])->name('account.logout');
+    });
+
+    Route::group(['Middleware' => 'auth'], function() {
+     
+    Route::get('/profile', [AuthController::class,'profile'])->name('account.profile'); 
+    });
+});
+
+
 
 
 
@@ -57,13 +90,21 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/products/create',[ProductController::class, 'create'])->name('products.create');
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        
         Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::get('/get-products', [ProductController::class,'getPorducts'])->name('products.getPorducts');
 
-
-        Route::post('/product-images/update', [ProdutImageController::class, 'update'])->name('product-images.update');
+        Route::post('/product-images/update', [ProductImageController::class, 'update'])->name('product-images.update');
         Route::delete('/product-images/{image}', [ProductImageController::class, 'destroyImage'])->name('product-images.destroy');
+        Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
-      
+        Route::get('/coupon/create', [DiscountCodeController::class, 'create'])->name('coupon.create');
+        Route::post('/coupon/store', [DiscountCodeController::class, 'store'])->name('coupon.store');
+        Route::get('/coupon', [DiscountCodeController::class, 'index'])->name('coupon.index');
+        Route::get('/coupon/edit/{id}', [DiscountCodeController::class, 'edit'])->name('coupon.edit');
+        Route::post('/coupon/update/{id}', [DiscountCodeController::class, 'update'])->name('coupon.update');
+     
+    
         Route::get('/getSlug',function(Request $request){
             $slug='';
             if(!empty($request->title)){

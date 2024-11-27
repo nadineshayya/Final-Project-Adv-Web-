@@ -56,6 +56,7 @@ class SubCategoryController extends Controller
             $subCategory->name = $request->name;
             $subCategory->slug = $request->slug;
             $subCategory->status = $request->status;
+            $subCategory->showHome = $request->showHome;
             $subCategory->category_id = $request->category;   
             $subCategory->save();
             
@@ -115,6 +116,7 @@ class SubCategoryController extends Controller
             $subCategory->name = $request->name;
             $subCategory->slug = $request->slug;
             $subCategory->status = $request->status;
+            $subCategory->showHome = $request->showHome;
             $subCategory->category_id = $request->category;
             $subCategory->save();
     
@@ -154,15 +156,6 @@ class SubCategoryController extends Controller
         'status' => true,
         'message' => 'Subcategory deleted successfully.'
     ]);
-}
-public function getSubcategories(Request $request)
-{
-    $category_id = $request->category_id;
-
-    // Fetch subcategories belonging to the selected category
-    $subCategories = SubCategory::where('category_id', $category_id)->get();
-
-    return response()->json(['subCategories' => $subCategories]);
 }
 
     

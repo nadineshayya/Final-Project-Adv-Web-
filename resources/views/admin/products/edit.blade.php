@@ -41,6 +41,16 @@
                                     <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Description">{{ $product->description }}</textarea>
                                     <div class="invalid-feedback"></div>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="short_description">Short Description</label>
+                                    <textarea name="short_description" id="short_description" cols="30" rows="10" class="form-control" placeholder="Description">{{ $product->short_description }}</textarea>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description">Shipping & Returns</label>
+                                    <textarea name="shipping_returns" id="shipping_returns" cols="30" rows="10" class="form-control" placeholder="Description">{{ $product->shipping_returns }}</textarea>
+                                    <div class="invalid-feedback"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -149,6 +159,8 @@
                                 </select>
                             </div>
                         </div>
+
+                       
                     </div>
                 </div>
 
@@ -162,8 +174,14 @@
 @endsection
 
 @section('customJs')
+<link rel="stylesheet" href="select2/css/select2.min.css">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="select2/js/select2.min.css"></script>
+
 <script>
+
+
+
     // Handle image upload using Dropzone
     Dropzone.autoDiscover = false;
 
@@ -193,7 +211,7 @@
     if (categoryId) {
         $.ajax({
             url: '{{ route("product-subcategories.index") }}',
-            type: 'GET',
+            type: 'Get',
             data: { category_id: categoryId },
             headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -9,9 +9,15 @@ class Product extends Model
 {
  use HasFactory;
 
- public function productsImages(){
+ public function product_images(){
     return $this->hasMany(ProductImage::class, 'product_id');
  }
+ // Product model
+public function subcategories()
+{
+    return $this->belongsToMany(Subcategory::class, 'product_subcategory'); // Adjust the pivot table name if needed
+}
+
 
     protected $fillable = [
         'title', 'slug', 'description', 'price', 'compare_price', 
