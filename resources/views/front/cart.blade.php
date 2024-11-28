@@ -1,154 +1,294 @@
 @extends('front.layouts.app')
 
 @section('content')
-<section class="section-5 pt-3 pb-3 mb-3 bg-white">
+<style>
+   body {
+    background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
+}
+
+.shopping-cart-container {
+    padding: 2rem 0;
+}
+
+.shopping-cart {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 128, 0.1); /* Blue shadow */
+}
+
+.cart-items {
+    flex: 2;
+}
+
+.order-summary {
+    flex: 1;
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 128, 0.1); /* Blue shadow */
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.cart-header h3 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: bold;
+    color: #000080; /* Blue text */
+}
+
+.cart-header span {
+    font-size: 1rem;
+    color: #666;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    padding: 1rem;
+    text-align: left;
+    color: #555;
+    border-bottom: 2px solid #ddd;
+}
+
+.cart-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.item-info h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #000080; /* Blue text */
+}
+
+.item-info a {
+    color: #ff4d4d; /* Red for remove link */
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-control button {
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.quantity-control button:hover {
+    background-color: #ddd;
+}
+
+.quantity-control input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.order-summary h4 {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    color: #000080; /* Blue text */
+}
+
+.summary-details p {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.summary-details p span {
+    font-weight: bold;
+    color: #000080; /* Blue text */
+}
+
+.promo-code {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.promo-code input {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.promo-code button {
+    background-color: #000080; /* Blue background */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.8rem;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.promo-code button:hover {
+    background-color: #333; /* Darker blue on hover */
+}
+
+.checkout-btn {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 0;
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000080; /* Blue text */
+    background-color: #ffffff;
+    border: 2px solid #000080; /* Blue border */
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.checkout-btn:hover {
+    background-color: #000080; /* Blue background on hover */
+    color: #ffffff; /* White text on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .shopping-cart {
+        flex-direction: column;
+    }
+
+    .cart-items,
+    .order-summary {
+        flex: 1;
+    }
+
+    .cart-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .order-summary h4 {
+        font-size: 1.4rem;
+    }
+}
+
+
+
+</style>
+
+<div class="shopping-cart-container">
     <div class="container">
-        <div class="light-font">
-            <ol class="breadcrumb primary-color mb-0">
-                <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
-                <li class="breadcrumb-item"><a class="white-text" href="#">Shop</a></li>
-                <li class="breadcrumb-item">Cart</li>
-            </ol>
-        </div>
-    </div>
-</section>
-
-<section class="section-9 pt-4">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="table-responsive">
-                    <table class="table" id="cart">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($cart as $item)
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                    <td>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        @if (!empty($productImage->image) && file_exists(public_path('images/products/' . $productImage->image)))
-                                            <img src="{{ asset('images/products/' . $productImage->image) }}" class="img-thumbnail" width="50">
-                                        @else
-                                            <span>No Image</span>
-                                        @endif
-                                    </div>
-
-
-
-
-
-
-
-
-
-                                        <h2>{{ $item['title'] }}</h2>
-                                    </div>
-                                </td>
-                                <td>${{ $item['price'] }}</td>
-                                <td>
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-dark btn-minus p-2 pt-1 pb-1" onclick="updateQuantity({{ $item['id'] }}, 'decrease')">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm border-0 text-center" value="{{ $item['quantity'] }}" id="quantity-{{ $item['id'] }}">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-dark btn-plus p-2 pt-1 pb-1" onclick="updateQuantity({{ $item['id'] }}, 'increase')">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
+        <div class="shopping-cart">
+            <!-- Cart Items Section -->
+            <div class="cart-items">
+                <div class="cart-header">
+                    <h3>Shopping Cart</h3>
+                    <span>{{ count($cart) }} Items</span>
+                </div>
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($cart as $item)
+                        <tr>
+                            <td>
+                                <div class="cart-item">
+                                    <img src="{{ asset('images/products/' . ($productImage->image ?? 'no-image.jpg')) }}" alt="Product">
+                                    <div class="item-info">
+                                        <h5>{{ $item['title'] }}</h5>
+                                        <a href="{{ route('cart.remove', $item['id']) }}">Remove</a>
                                     </div>
                                 </div>
                             </td>
-
-                                </td>
-                   
-
-
-                                <td id="total-price-{{ $item['id'] }}">
-                                    ${{ number_format($item['price'] * $item['quantity'], 2) }}
-                                </td>
-
-
-                                <td>
+                            <td>
+                                <div class="quantity-control">
+                                    <button onclick="updateQuantity({{ $item['id'] }}, 'decrease')">-</button>
+                                    <input type="text" value="{{ $item['quantity'] }}" id="quantity-{{ $item['id'] }}">
+                                    <button onclick="updateQuantity({{ $item['id'] }}, 'increase')">+</button>
+                                </div>
+                            </td>
+                            <td>${{ $item['price'] }}</td>
+                            <td>${{ number_format($item['price'] * $item['quantity'], 2) }}</td>
+                            <td>
                                 <form action="{{ route('cart.remove', $item['id']) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">x</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-            <div class="col-md-4">
-                <div class="card cart-summery">
-                    <div class="sub-title">
-                        <h2 class="bg-white">Cart Summary</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between pb-2">
-                        <@php
-            $subtotal = 0;
-            foreach ($cart as $item) {
-                $subtotal += $item['quantity'] * $item['price'];
-            }
-        @endphp
 
-<div>Subtotal</div>
-<div id="subtotal">${{ number_format($subtotal, 2) }}</div>
-
-
-                        </div>
-                        <div class="d-flex justify-content-between pb-2">
-                            <div>Shipping</div>
-                            <div>${{ $shipping }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between summery-end">
-                        <td id="total-cart">
-                        @php
-                            $cart = session()->get('cart', []);
-                            $total = 0;
-                            foreach ($cart as $item) {
-                                $total += $item['quantity'] * $item['price'];
-                            }
-                        @endphp
-
-<div>Total</div>
-<div id="total-price">${{ number_format($total, 2) }}</div>
-
-                        </td>
-
-                        </div>
-                        <div class="pt-5">
-                            <a href="{{route('front.checkout')}}" class="btn-dark btn btn-block w-100">Proceed to Checkout</a>
-                        </div>
-                    </div>
+            <!-- Order Summary Section -->
+            <div class="order-summary">
+                <h4>Order Summary</h4>
+                <div class="summary-details">
+                    <p>Items <span>{{ count($cart) }}</span></p>
+                    <p>Shipping <span>${{ $shipping }}</span></p>
+                    <p>Total Cost <span>${{ number_format($total, 2) }}</span></p>
                 </div>
-                <div class="input-group apply-coupan mt-4">
-                    <input type="text" placeholder="Coupon Code" class="form-control">
-                    <button class="btn btn-dark" type="button" id="button-addon2">Apply Coupon</button>
+                <div class="promo-code">
+                    <input type="text" placeholder="Enter your code">
+                    <button>Apply</button>
                 </div>
+                <a href="{{ route('front.checkout') }}" class="checkout-btn">Checkout</a>
             </div>
         </div>
     </div>
-</section>
+</div>
 @endsection
-@section('customJs')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script type="text/javascript">
+@section('customJs')
+<script>
 function updateQuantity(productId, action) {
     let quantityInput = document.getElementById('quantity-' + productId);
     let currentQuantity = parseInt(quantityInput.value);
@@ -170,13 +310,8 @@ function updateQuantity(productId, action) {
         },
         success: function (response) {
             if (response.status) {
-                // Update quantity input
                 quantityInput.value = response.newQuantity;
-
-                // Update item total price
                 document.getElementById('total-price-' + productId).textContent = `$${response.itemTotal.toFixed(2)}`;
-
-                // Update subtotal
                 document.getElementById('subtotal').textContent = `$${response.subtotal.toFixed(2)}`;
             } else {
                 alert('Failed to update quantity.');
@@ -187,10 +322,5 @@ function updateQuantity(productId, action) {
         }
     });
 }
-
-
-
-
 </script>
-
 @endsection

@@ -2,159 +2,179 @@
 
 @section('content')
 
-<section class="content-header">					
-					<div class="container-fluid my-2">
-						<div class="row mb-2">
-							<div class="col-sm-6">
-								<h1>Discount Coupons</h1>
-							</div>
-							<div class="col-sm-6 text-right">
-								<a href="{{route('categories.create')}}" class="btn btn-primary">New Category</a>
-							</div>
-						</div>
-					</div>
-					<!-- /.container-fluid -->
-				</section>
-				<!-- Main content -->
+<!-- Content Header -->
+<section class="content-header">
+    <div class="container-fluid my-2">
+        <div class="row mb-2">
+            <div class="col-12 col-md-6">
+                <h1 class="h3 text-primary fw-bold">
+                    <i class="fas fa-tags me-2"></i> Discount Coupons
+                </h1>
+            </div>
+            <div class="col-12 col-md-6 text-md-end">
+                <a href="{{ route('categories.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> New Category
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
-				<section class="content">
-					<!-- Default box -->
-					<div class="container-fluid">
-					@include('admin.message')
-						<div class="card">
-                        <form action="" method="get">
-							<div class="card-header">
-                               <div class="card-title">
+<!-- Main Content -->
+<section class="content">
+    <div class="container-fluid">
+        @include('admin.message')
 
-                               <button type="button" onclick="window.location.href='{{route('coupon.index')}}'" class="btn btn-default btn-sm">Reset</button>
-                               </div>
-                                <div class="card-tools">
-									<div class="input-group input-group" style="width: 250px;">
-										<input value="{{ Request::get('keyword')}}" type="text" name="keyword" class="form-control float-right" placeholder="Search">
-					
-										<div class="input-group-append">
-                                        <button type="submit" class="btn btn-default">
-											<i class="fas fa-search"></i>
-										  </button>
-										</div>
-									  </div>
-								</div>
-                              
-								
-							</div>
-                            </form>
-							<div class="card-body table-responsive p-0">								
-								<table class="table table-hover text-nowrap">
-									<thead>
-										<tr>
-											<th width="60">ID</th>
-											<th>Code</th>
-											<th>Name</th>
-                                            <th>Discount</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-											<th width="100">Status</th>
-											<th width="100">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-                                        @if($discountCoupon->isNotEmpty())
-                                          @foreach($discountCoupon as $discountcoup)
+        <div class="card shadow-sm">
+            <!-- Search and Reset -->
+            <form action="" method="get">
+                <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <button type="button" onclick="window.location.href='{{ route('coupon.index') }}'" class="btn btn-secondary btn-sm mb-2 mb-md-0">
+                        <i class="fas fa-sync me-1"></i> Reset
+                    </button>
+                    <div class="input-group" style="max-width: 400px;">
+                        <input value="{{ Request::get('keyword') }}" type="text" name="keyword" class="form-control" placeholder="Search">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
 
-                                          <tr>
-											<td>{{$discountcoup->id}}</td>
-											<td>{{$discountcoup->code}}</td>
-											<td>{{$discountcoup->name}}</td>
-                                            <td>
-                                                @if($discountcoup->type == 'percent')
-                                                {{$discountcoup->discount_account}}%
-                                                @else
-                                                 ${{$discountcoup->discount_account}}
-                                                 @endif
-                                            </td>
-                                            <td>{{(!empty($discountcoup->starts_at))? \Carbon\Carbon::parse($discountcoup->starts_at)->format('y-m-d') : ''}}</td>
-                                            <td>{{(!empty($discountcoup->expires_at))? \Carbon\Carbon::parse($discountcoup->expires_at)->format('y-m-d') : ''}}</td>
-                                            
-                                            <td>
-                                                @if($discountcoup->status == 1)
-												<svg class="text-success-500 h-6 w-6 text-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-													<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-												</svg>
-                                                @else
-
-                                                <svg class="text-danger h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-													<path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-												</svg>
-                                                @endif
-											</td>
-											<td>
-												<a href="{{route('coupon.edit', $discountcoup->id)}}">
-													<svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-														<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-													</svg>
-												</a>
-												<a href="#" onclick="deleteCategory({{$discountcoup->id}})" class="text-danger w-4 h-4 mr-1">
-													<svg wire:loading.remove.delay="" wire:target="" class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-														<path	ath fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-												  	</svg>
-												</a>
-											</td>
-										</tr>
-                                        @endforeach
+            <!-- Table Section -->
+            <div class="card-body p-0">
+                <div class="table-responsive d-none d-md-block">
+                    <table class="table table-striped table-hover align-middle text-center">
+                        <thead style="background: linear-gradient(90deg, #1e90ff, #000080); color: #fff;">
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Discount</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if($discountCoupon->isNotEmpty())
+                                @foreach($discountCoupon as $discountcoup)
+                                <tr>
+                                    <td>{{ $discountcoup->id }}</td>
+                                    <td>{{ $discountcoup->code }}</td>
+                                    <td>{{ $discountcoup->name }}</td>
+                                    <td>
+                                        @if($discountcoup->type == 'percent')
+                                            {{ $discountcoup->discount_account }}%
                                         @else
-                                        <tr>
-                                            <td colspan="5"  > Records Not Found</td>
-                                        </tr>
+                                            ${{ $discountcoup->discount_account }}
+                                        @endif
+                                    </td>
+                                    <td>{{ $discountcoup->starts_at ? \Carbon\Carbon::parse($discountcoup->starts_at)->format('Y-m-d') : '-' }}</td>
+                                    <td>{{ $discountcoup->expires_at ? \Carbon\Carbon::parse($discountcoup->expires_at)->format('Y-m-d') : '-' }}</td>
+                                    <td>
+                                        @if($discountcoup->status == 1)
+                                            <span class="badge bg-success">Active</span>
+                                        @else
+                                            <span class="badge bg-danger">Inactive</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('coupon.edit', $discountcoup->id) }}" class="btn btn-warning btn-sm mb-2">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteCategory({{ $discountcoup->id }})">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @else
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-3">No Records Found</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
 
-                                        @endif 
-										
-										
-									</tbody>
-								</table>										
-							</div>
-							<div class="card-footer clearfix">
-                                {{$discountCoupon ->links() }}
-								
-							</div>
-						</div>
-					</div>
-					<!-- /.card -->
-				</section>
+                <!-- Vertical Layout for Smaller Screens -->
+                <div class="d-md-none">
+                    @if($discountCoupon->isNotEmpty())
+                        @foreach($discountCoupon as $discountcoup)
+                        <div class="border p-3 mb-3 rounded" style="background-color: #f9f9f9;">
+                            <p><strong>ID:</strong> {{ $discountcoup->id }}</p>
+                            <p><strong>Code:</strong> {{ $discountcoup->code }}</p>
+                            <p><strong>Name:</strong> {{ $discountcoup->name }}</p>
+                            <p><strong>Discount:</strong> 
+                                @if($discountcoup->type == 'percent')
+                                    {{ $discountcoup->discount_account }}%
+                                @else
+                                    ${{ $discountcoup->discount_account }}
+                                @endif
+                            </p>
+                            <p><strong>Start Date:</strong> {{ $discountcoup->starts_at ? \Carbon\Carbon::parse($discountcoup->starts_at)->format('Y-m-d') : '-' }}</p>
+                            <p><strong>End Date:</strong> {{ $discountcoup->expires_at ? \Carbon\Carbon::parse($discountcoup->expires_at)->format('Y-m-d') : '-' }}</p>
+                            <p><strong>Status:</strong> 
+                                @if($discountcoup->status == 1)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-danger">Inactive</span>
+                                @endif
+                            </p>
+                            <div>
+                                <a href="{{ route('coupon.edit', $discountcoup->id) }}" class="btn btn-warning btn-sm mb-2">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <button class="btn btn-danger btn-sm" onclick="deleteCategory({{ $discountcoup->id }})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        @endforeach
+                    @else
+                        <p class="text-center text-muted py-3">No Records Found</p>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="card-footer d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <p class="mb-2 mb-md-0 text-muted">Showing {{ $discountCoupon->firstItem() ?? 0 }} to {{ $discountCoupon->lastItem() ?? 0 }} of {{ $discountCoupon->total() }} entries</p>
+                {{ $discountCoupon->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
+    </div>
+</section>
 
 @endsection
 
 @section('customJs')
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-function deleteCategory(id) {
-    // Construct the URL with the category ID
-    var url = '{{ route("categories.destroy", ":id") }}'.replace(':id', id);
+    function deleteCategory(id) {
+        const url = '{{ route("categories.destroy", ":id") }}'.replace(':id', id);
 
-    // Confirmation dialog
-    if (confirm("Are you sure you want to delete this category?")) {
-        $.ajax({
-            url: url,
-            type: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                if (response.status) {
-                    // Remove the deleted category row
-                    $(`tr:has(td:contains('${id}'))`).remove();
-                    alert(response.message);
-                } else {
-                    alert('Failed to delete the category. Please try again.');
+        if (confirm("Are you sure you want to delete this category?")) {
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.status) {
+                        location.reload();
+                    } else {
+                        alert('Failed to delete the category. Please try again.');
+                    }
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    alert('An error occurred. Unable to delete the category.');
                 }
-            },
-            error: function (xhr) {
-                console.error(xhr.responseText);
-                alert('An error occurred. Unable to delete the category.');
-            }
-        });
+            });
+        }
     }
-}
-
 </script>
-
 @endsection
