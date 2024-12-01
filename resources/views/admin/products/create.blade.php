@@ -143,12 +143,35 @@
                 </div>
             </div>
         </div>
-
+        <div class="card mb-3">
+                            <div class="card-body">
+                                <h2 class="h4 mb-3">Inventory</h2>
+                                <div class="mb-3">
+                                    <label for="sku">SKU (Stock Keeping Unit)</label>
+                                    <input type="text" name="sku" id="sku" class="form-control" placeholder="SKU">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="barcode">Barcode</label>
+                                                    <input type="text" name="barcode" id="barcode" class="form-control" placeholder="Barcode">	
+                                                </div>
+                                            </div>   
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input class="custom-control-input" type="checkbox" id="track_qty" name="track_qty" checked>
+                                                        <label for="track_qty" class="custom-control-label">Track Quantity</label>
+                                <div class="mb-3">
+                                    <label for="qty">Quantity</label>
+                                    <input type="number" name="qty" id="qty" class="form-control" min="0" placeholder="Quantity">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
         <!-- Submit Button -->
         <div class="text-end">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-2"></i> Create
-            </button>
+        <button type="submit" class="btn btn-primary me-2">Create</button>
             <a href="{{ route('products.index') }}" class="btn btn-outline-dark">
                 <i class="fas fa-times me-2"></i> Cancel
             </a>
@@ -158,7 +181,109 @@
 @endsection
 
 @section('customJs')
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-    // Your existing JavaScript code for form submission, dropzone, and dynamic subcategories remains unchanged.
+    $("#productForm").submit(function(event) {
+        event.preventDefault();
+        var formArray = $(this).serializeArray();
+        $("button[type=submit]").prop('disabled', true);
+        $.ajax({
+            url: '{{ route("products.store") }}',
+            type: 'POST',
+            data: formArray,
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                $("button[type=submit]").prop('disabled', false);
+                if (response.status) {
+
+                    alert('Product created successfully!');
+                    window.location.href="{{route('products.index')}}";
+                } else {
+                    var errors = response.errors;
+
+                    // Clear previous errors
+                    $("input, textarea, select").removeClass('is-invalid');
+                    $(".invalid-feedback").html("");
+
+                    // Highlight invalid inputs and show error messages
+                    for (const [key, messages] of Object.entries(errors)) {
+                        var field = $(`[name="${key}"]`);
+                        field.addClass('is-invalid');
+                        field.siblings('.invalid-feedback').html(messages[0]);
+                }
+            }
+            
+     },error: function(xhr) {
+                console.error("Error:", xhr.responseText);
+            } });
+    });
+
+    // Dynamic Subcategories
+   $("#category").change(function () {
+    var categoryId = $(this).val();
+    if (categoryId) {
+        $.ajax({
+            url: '{{ route("product-subcategories.index") }}',
+            type: 'GET',
+            data: { category_id: categoryId },
+            success: function (response) {
+                if (response.status) {
+                    $("#sub_category").html('<option value="">Select Sub Category</option>');
+                    response.subCategories.forEach(function (subCategory) {
+                        $("#sub_category").append(
+                            `<option value="${subCategory.id}">${subCategory.name}</option>`
+                        );
+                    });
+                }
+            },
+            error: function () {
+                console.error("Error fetching subcategories.");
+            },
+        });
+    }
+});
+Dropzone.autoDiscover = false;
+
+$(document).ready(function () {
+    const dropzone = new Dropzone("#image-upload", {
+        url: "{{ route('temp-images.create') }}",
+        maxFiles: 10,
+        paramName: "image",
+        acceptedFiles: "image/*",  // Restrict to image types
+        addRemoveLinks: true,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(file, response) {
+            let imageCell = `
+                    <th class="text-center" id="image-row-${response.image_id}">
+                        <div class="card" style="width: 150px;">
+                        <input type="hidden" name="image_array[]" value="${response.image_id}}">
+                            <img src="${response.ImagePath}" class="card-img-top" alt="Uploaded Image">
+                            <div class="card-body text-center">
+                                <button href="javascript:void(0)" onclick="deleteImage(${response.image_id})"class="btn btn-danger btn-sm remove-image" data-id="${response.image_id}">Remove</button>
+                            </div>
+                        </div>
+                    </th>
+                `;
+                $('#product-gallery').append(imageCell);
+            // Store the image ID in the hidden input field
+            $("#image_id").val(response.image_id);
+        },
+        complete: function(file) {
+            // Clear the image_id when the file is removed
+            this.removeFile(file);
+        },
+    });});
+
+function deleteImage(id){
+$("#image-row-"+id).remove();
+}
+
 </script>
 @endsection

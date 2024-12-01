@@ -239,10 +239,13 @@
                         <tr>
                             <td>
                                 <div class="cart-item">
-                                    <img src="{{ asset('images/products/' . ($productImage->image ?? 'no-image.jpg')) }}" alt="Product">
+                                  
                                     <div class="item-info">
+                                   
+                                           
+                                              
                                         <h5>{{ $item['title'] }}</h5>
-                                        <a href="{{ route('cart.remove', $item['id']) }}">Remove</a>
+                                       
                                     </div>
                                 </div>
                             </td>
@@ -254,7 +257,7 @@
                                 </div>
                             </td>
                             <td>${{ $item['price'] }}</td>
-                            <td>${{ number_format($item['price'] * $item['quantity'], 2) }}</td>
+                            <td id="total-price-{{ $item['id'] }}">${{ number_format($item['price'] * $item['quantity'], 2) }}</td>
                             <td>
                                 <form action="{{ route('cart.remove', $item['id']) }}" method="POST">
                                     @csrf
@@ -273,8 +276,11 @@
                 <h4>Order Summary</h4>
                 <div class="summary-details">
                     <p>Items <span>{{ count($cart) }}</span></p>
+            
+
+                   <p >Subtotal <span id="subtotal"> ${{ number_format($subtotal, 2) }}</span> </p>
                     <p>Shipping <span>${{ $shipping }}</span></p>
-                    <p>Total Cost <span>${{ number_format($total, 2) }}</span></p>
+                   
                 </div>
                 <div class="promo-code">
                     <input type="text" placeholder="Enter your code">
@@ -288,7 +294,9 @@
 @endsection
 
 @section('customJs')
-<script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
 function updateQuantity(productId, action) {
     let quantityInput = document.getElementById('quantity-' + productId);
     let currentQuantity = parseInt(quantityInput.value);
@@ -310,8 +318,13 @@ function updateQuantity(productId, action) {
         },
         success: function (response) {
             if (response.status) {
+                // Update quantity input
                 quantityInput.value = response.newQuantity;
+
+                // Update item total price
                 document.getElementById('total-price-' + productId).textContent = `$${response.itemTotal.toFixed(2)}`;
+
+                // Update subtotal
                 document.getElementById('subtotal').textContent = `$${response.subtotal.toFixed(2)}`;
             } else {
                 alert('Failed to update quantity.');
@@ -322,5 +335,9 @@ function updateQuantity(productId, action) {
         }
     });
 }
+
+
+
+
 </script>
 @endsection

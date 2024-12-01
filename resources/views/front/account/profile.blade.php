@@ -32,30 +32,38 @@
                     <!-- Card with Form -->
                     <div class="card shadow-sm">
                         <div class="card-body p-4">
-                            <form>
+                            <form id="accountForm">
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="name" class="form-label">Name</label>
                                         <input type="text" name="name" id="name" class="form-control" placeholder="Enter Your Name">
+                                        <span class="error-message" id="name-error"></span>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="email" class="form-label">Email</label>
                                         <input type="email" name="email" id="email" class="form-control" placeholder="Enter Your Email">
+                                        <span class="error-message" id="email-error"></span>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="phone" class="form-label">Phone</label>
                                         <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter Your Phone">
+                                        <span class="error-message" id="phone-error"></span>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="location" class="form-label">Location</label>
                                         <input type="text" name="location" id="location" class="form-control" placeholder="Enter Your Location">
+                                        <span class="error-message" id="location-error"></span>
                                     </div>
                                     <div class="col-md-12">
                                         <label for="address" class="form-label">Address</label>
                                         <textarea name="address" id="address" class="form-control" rows="2" placeholder="Enter Your Address"></textarea>
+                                        <span class="error-message" id="address-error"></span>
                                     </div>
                                     <div class="col-md-12 text-center mt-3">
                                         <button type="submit" class="btn btn-primary px-4">Update Setting</button>
+                                    </div>
+                                    <div id="success-message" class="col-md-12 mt-3 text-center" style="display: none;">
+                                        <p class="text-success">Your account settings have been updated successfully!</p>
                                     </div>
                                 </div>
                             </form>
@@ -118,5 +126,69 @@
     .btn-primary:hover {
         background-color: #0056b3;
     }
+
+    .error-message {
+        color: red;
+        font-size: 0.875rem;
+        display: none;
+    }
+
+    #success-message {
+        font-size: 1rem;
+        color: green;
+    }
 </style>
+@endsection
+@section('customJs')
+<script>
+    document.getElementById('accountForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(function(msg) {
+            msg.style.display = 'none';
+        });
+
+        // Get form values
+        var name = document.getElementById('name').value.trim();
+        var email = document.getElementById('email').value.trim();
+        var phone = document.getElementById('phone').value.trim();
+        var location = document.getElementById('location').value.trim();
+        var address = document.getElementById('address').value.trim();
+
+        var isValid = true;
+
+        // Validate fields
+        if (name === '') {
+            document.getElementById('name-error').style.display = 'block';
+            isValid = false;
+        }
+
+        if (email === '') {
+            document.getElementById('email-error').style.display = 'block';
+            isValid = false;
+        }
+
+        if (phone === '') {
+            document.getElementById('phone-error').style.display = 'block';
+            isValid = false;
+        }
+
+        if (location === '') {
+            document.getElementById('location-error').style.display = 'block';
+            isValid = false;
+        }
+
+        if (address === '') {
+            document.getElementById('address-error').style.display = 'block';
+            isValid = false;
+        }
+
+        // If valid, show success message and clear form
+        if (isValid) {
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('accountForm').reset(); // Reset the form fields
+        }
+    });
+</script>
 @endsection

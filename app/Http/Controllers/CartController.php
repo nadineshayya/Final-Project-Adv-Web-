@@ -226,9 +226,9 @@ public function checkout(Request $request)
    
 public function processCheckout(Request $request)
 {
-    // Validate the form input
+    // Validate form input
     $validator = Validator::make($request->all(), [
-        'first_name' => 'required|min:5',
+        'first_name' => 'required',
         'last_name' => 'required',
         'email' => 'required|email',
         'mobile' => 'required',
@@ -236,7 +236,6 @@ public function processCheckout(Request $request)
         'address' => 'required',
     ]);
 
-    // Handle validation errors
     if ($validator->fails()) {
         return response()->json([
             'message' => 'Please fix the errors',
@@ -245,7 +244,6 @@ public function processCheckout(Request $request)
         ], 422);
     }
 
-    // Ensure the user is authenticated
     if (!Auth::check()) {
         return response()->json([
             'message' => 'User is not authenticated',
@@ -254,75 +252,53 @@ public function processCheckout(Request $request)
     }
 
     $user = Auth::user();
+    $discount = session()->get('discount', ['code' => null, 'discount_amount' => 0, 'grand_total' => 0]);
 
-    // Save or update customer details
-    CustomerAddresses::updateOrCreate(
-        ['user_id' => $user->id],
-        [
-            'user_id' => $user->id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'mobile' => $request->mobile,
-            'country_id' => $request->country, // Ensure this field is included
-            'address' => $request->address,
-            'notes' => $request->order_notes,
-        ]
-    );
+    $cart = session()->get('cart', []);
+    $shipping = 20;
+    $subTotal = array_sum(array_column($cart, 'price'));
+    $grandTotal = $discount['grand_total'] ?: ($subTotal + $shipping);
 
-    // Order and order items logic for 'cod' payment method
-    if ($request->payment_method == 'cod') {
-        $cart = session()->get('cart', []);
-        $shipping = 20;
-        $subTotal = array_sum(array_column($cart, 'price'));
-        $grandTotal = $subTotal + $shipping;
+    $order = new Order;
+    $order->user_id = $user->id;
+    $order->subtotal = $subTotal;
+    $order->shipping = $shipping;
+    $order->coupon_code = $discount['code'];
+    $order->discount = $discount['discount_amount'];
+    $order->grand_total = $grandTotal;
+    $order->first_name = $request->first_name;
+    $order->last_name = $request->last_name;
+    $order->email = $request->email;
+    $order->mobile = $request->mobile;
+    $order->country_id = $request->country;
+    $order->address = $request->address;
+    $order->notes = $request->order_notes;
 
-        $order = new Order;
-        $order->user_id = $user->id;
-        $order->subtotal = $subTotal;
-        $order->shipping = $shipping;
-        $order->coupon_code = null;
-        $order->discount = 0;
-        $order->grand_total = $grandTotal;
-        $order->first_name = $request->first_name;
-        $order->last_name = $request->last_name;
-        $order->email = $request->email;
-        $order->mobile = $request->mobile;
-        $order->country_id = $request->country;
-        $order->address = $request->address;
-        $order->notes = $request->order_notes;
+    $order->save();
 
-        $order->save();
-
-        // Create order items
-        foreach ($cart as $cartItem) {
-            OrderItems::create([
-                'order_id' => $order->id,
-                'product_id' => $cartItem['id'],
-                'name' => $cartItem['title'],
-                'qty' => $cartItem['quantity'],
-                'price' => $cartItem['price'],
-                'total' => $cartItem['quantity'] * $cartItem['price'],
-            ]);
-        }
-
-        // Clear the cart after successful checkout
-        session()->forget('cart');
-
-        return response()->json([
-            'message' => 'Order placed successfully',
-            'status' => true,
+    // Save order items
+    foreach ($cart as $cartItem) {
+        OrderItems::create([
             'order_id' => $order->id,
-
+            'product_id' => $cartItem['id'],
+            'name' => $cartItem['title'],
+            'qty' => $cartItem['quantity'],
+            'price' => $cartItem['price'],
+            'total' => $cartItem['quantity'] * $cartItem['price'],
         ]);
     }
 
-    // Catch unexpected errors
+    // Clear the cart and discount session after checkout
+    session()->forget('cart');
+    session()->forget('discount');
+
     return response()->json([
-        'message' => 'An error occurred',
-        'status' => false,
+        'message' => 'Order placed successfully',
+        'status' => true,
+        'order_id' => $order->id,
     ]);
 }
+
 
 public function thankyou($id){
     return view('front.thankyou',[
@@ -334,7 +310,7 @@ public function thankyou($id){
 public function applyDiscount(Request $request)
 {
     $code = DiscountCoupon::where('code', $request->code)->first();
-
+    $shipping = 20;
     if (!$code) {
         return response()->json([
             'status' => false,
@@ -345,25 +321,33 @@ public function applyDiscount(Request $request)
     $cart = session()->get('cart', []); // Get the cart from the session
     $subtotal = array_sum(array_map(function ($item) {
         return $item['price'] * $item['quantity'];
-    }, $cart)); // Assuming you have a subtotal already
+    }, $cart));
+
     $discountAmount = $code->discount_account;
 
-    // Calculate grand total based on discount type
     if ($code->type === 'percent') {
         $discountAmount = ($discountAmount / 100) * $subtotal;
     }
 
     $grandTotal = $subtotal - $discountAmount;
+    $grandTotal =  $grandTotal + $shipping;
+    // Store discount details in the session
+    session()->put('discount', [
+        'code' => $code->code,
+        'discount_amount' => $discountAmount,
+        'grand_total' => $grandTotal,
+    ]);
 
-    // Make sure the response includes the discount_account and grandTotal
     return response()->json([
         'status' => true,
         'grandTotal' => $grandTotal,
         'discount' => [
-            'discount_account' => $discountAmount,  // Ensure this is included
+            'discount_account' => $discountAmount,
         ],
     ]);
 }
+
+
 
 
 

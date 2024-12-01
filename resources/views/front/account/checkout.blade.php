@@ -111,7 +111,7 @@
                             </div>
                             <div class="d-flex justify-content-between">
                                 <div class="h6">Discount</div>
-                                <div class="h6" id="discount_value">{{ $discount->discount_amount }}</div>
+                                <div class="h6" id="discount_value">{{ $discount->discount_amount ?? 'No discount'}}</div>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <div class="h6">Shipping</div>
@@ -273,7 +273,7 @@ $("#apply-discount").click(function() {
                 // Make sure the discount_account exists in the response
                 if (response.discount && response.discount.discount_account) {
                     var discountAmount = response.discount.discount_account;
-                    let total = response.grandTotal +20;
+                    let total = response.grandTotal +0;
                     $("#grandTotal").html('$' + total);
                     $("#discount_value").html('$' + discountAmount);
                 } else {

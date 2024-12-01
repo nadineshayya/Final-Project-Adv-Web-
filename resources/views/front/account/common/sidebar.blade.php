@@ -12,17 +12,17 @@
                 </a>
             </li>
             <li>
-                <a href="my-orders.php" class="menu-item">
+                <a href="{{route('front.account.orders')}}" class="menu-item">
                     <i class="fas fa-shopping-bag"></i> My Orders
                 </a>
             </li>
             <li>
-                <a href="wishlist.php" class="menu-item">
+                <a href="{{route('front.account.whishlist')}}" class="menu-item">
                     <i class="fas fa-heart"></i> Wishlist
                 </a>
             </li>
             <li>
-                <a href="change-password.php" class="menu-item">
+                <a href="{{route('front.account.changePassword')}}" class="menu-item">
                     <i class="fas fa-lock"></i> Change Password
                 </a>
             </li>

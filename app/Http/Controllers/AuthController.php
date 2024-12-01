@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\User; // Import the User model
 use Illuminate\Support\Facades\Hash; // Import the Hash facade
 use Illuminate\Support\Facades\Auth;
+use App\Models\Order; 
+use App\Models\OrderItems; 
 
 class AuthController extends Controller
 {
@@ -83,6 +85,63 @@ public function logout(){
     Auth::logout();
     return redirect()->route('account.login')
     ->with('success','You successfully Loget Out!' );
+}
+
+public function order()
+{
+    // Initialize data array
+    $data = [];
+    
+    // Retrieve authenticated user
+    $user = Auth::user();
+    
+    if (!$user) {
+        // Redirect or return a response if the user is not authenticated
+        return redirect()->route('account.login')->with('error', 'You need to be logged in to view orders.');
+    }
+    
+    // Retrieve orders for the authenticated user
+    $orders = Order::where('user_id', $user->id)
+        ->orderBy('created_at', 'DESC')
+        ->get();
+    
+    $data['orders'] = $orders;
+
+    // Return the view
+    return view('front.account.orders', $data);
+}
+
+public function orderDetail($id)
+{
+    // Initialize data array
+    $data = [];
+    
+    // Retrieve authenticated user
+    $user = Auth::user();
+    
+    if (!$user) {
+        // Redirect or return a response if the user is not authenticated
+        return redirect()->route('account.login')->with('error', 'You need to be logged in to view order details.');
+    }
+    
+    // Retrieve the specific order for the authenticated user
+    $order = Order::where('user_id', $user->id)
+        ->where('id', $id)
+        ->first();
+    
+    if (!$order) {
+        // Handle case where the order is not found
+        return redirect()->route('front.account.orders')->with('error', 'Order not found or you do not have permission to view this order.');
+    }
+    
+    $data['order'] = $order;
+
+    // Retrieve the items for the order
+    $orderItems = OrderItems::where('order_id', $id)->get();
+    $data['orderItems'] = $orderItems;
+
+    // Return the view
+    return view('front.account.order-details', $data);
 }
 
 }

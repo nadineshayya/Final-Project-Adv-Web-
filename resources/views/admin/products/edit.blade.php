@@ -233,6 +233,56 @@
     }
 });
 
+$("#productForm").submit(function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Serialize form data
+    var formArray = $(this).serializeArray();
+
+    // Disable the submit button to prevent multiple clicks
+    $("button[type=submit]").prop('disabled', true);
+
+    // Perform the AJAX request
+    $.ajax({
+        url: '{{ route("products.update", $product->id) }}', // Update route
+        type: 'POST',
+        data: formArray,
+        dataType: 'json',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token
+        },
+        success: function(response) {
+            // Enable the submit button
+            $("button[type=submit]").prop('disabled', false);
+
+            if (response.status) {
+                alert('Product updated successfully!');
+                window.location.href = "{{ route('products.index') }}"; // Redirect on success
+            } else {
+                // Display validation errors
+                alert('Validation failed. Please check the form for errors.');
+
+                // Highlight invalid fields and show error messages
+                for (const [key, messages] of Object.entries(response.errors)) {
+                    var field = $(`[name="${key}"]`);
+                    field.addClass('is-invalid'); // Add error class
+                    field.siblings('.invalid-feedback').html(messages[0]); // Display error
+                }
+            }
+        },
+        error: function(xhr) {
+            // Log the error for debugging
+            console.error("Error:", xhr.responseText);
+
+            // Show a user-friendly alert
+            alert('An error occurred while updating the product. Please try again.');
+
+            // Enable the submit button
+            $("button[type=submit]").prop('disabled', false);
+        }
+    });
+});
+
         // Delete image
         window.deleteImage = function(imageId) {
             if (confirm("Are you sure you want to delete this image?")) {

@@ -193,17 +193,67 @@
 @endsection
 
 @section('customJs')
-<!-- Include jQuery and jQuery UI Datepicker CSS from CDN -->
-<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#starts_at, #expires_at').datepicker({
-            dateFormat: 'yy-mm-dd',
-            changeMonth: true,
-            changeYear: true
+    <!-- Include jQuery and jQuery UI Datepicker CSS from CDN -->
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+      $(document).ready(function () {
+    // Initialize Datepicker
+    $('#starts_at, #expires_at').datepicker({
+        dateFormat: 'yy-mm-dd', // Date format compatible with the backend
+        showButtonPanel: true,
+        changeMonth: true,
+        changeYear: true
+    });
+
+    // Handle form submission
+    $('#discountForm').submit(function (e) {
+        e.preventDefault();
+
+        // Collect form data
+        let formData = new FormData(this);
+
+        // Append time to date fields
+        const startsAt = $('#starts_at').val();
+        const expiresAt = $('#expires_at').val();
+
+        formData.set('starts_at', startsAt + ' 00:00:00'); // Set start time
+        formData.set('expires_at', expiresAt + ' 23:59:59'); // Set end time
+
+        $('button[type=submit]').prop('disabled', true);
+
+        $.ajax({
+            url: '{{ route("coupon.store") }}',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').html('');
+
+                if (!response.status) {
+                    // Show validation errors
+                    $.each(response.errors, function (field, errors) {
+                        let fieldElement = $('#' + field);
+                        fieldElement.addClass('is-invalid');
+                        fieldElement.next('.invalid-feedback').html(errors.join(', '));
+                    });
+                } else {
+                    alert(response.message);
+                    window.location.href = '{{ route("coupon.index") }}';
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                $('button[type=submit]').prop('disabled', false);
+            }
         });
     });
-</script>
+});
+
+    </script>
 @endsection

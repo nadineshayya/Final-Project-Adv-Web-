@@ -1,22 +1,51 @@
 <?php
 
-namespace App\Http\Middleware;
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
-use Illuminate\Http\Request; 
+namespace App\Http\Controllers\admin;
+use Illuminate\Support\Facades\Auth;
 
-class AdminAuthenticate extends Middleware 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator; 
+
+class AdminloginController extends Controller
 {
-   protected function redirectTo(Request $request): ?string{
-    return $request->expectsJson() ? null : route('admin.login');
-   }
-     
-
-   protected function authenticate(Request $request, array $guards)
-    {
-       if ($this ->auth->guard('admin')->check()){
-        return $this ->auth->shouldUse('admin');
-       }
-
-        $this->unauthenticated($request, ['admin']);
+    public function index(){
+        return view('admin.login');
     }
+    public function authenticate(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'email'=> 'required|email',
+            'password' => 'required'
+        ]);
+    
+        if($validator->passes()) {
+            if(Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+              $admin=Auth::guard('admin')->user();
+
+                if($admin->role == 1){
+                    return redirect()->route('admin.dashboard');
+
+                }else{
+
+
+                    Auth::guard('admin')->logout();
+                    return redirect()->route('admin.login')->with('error', 'You are not allowed to access admin panel.')  ;
+                }
+                return redirect()->route('admin.dashboard')->with('success', 'Login successful');
+          
+          
+            } else {
+                return redirect()->route('admin.login')->with('error', 'Email or password is incorrect');
+            }
+        } else {
+            return redirect()->route('admin.login')
+                ->withErrors($validator)
+                ->withInput($request->only('email'));
+        }
+    }
+
+
+  
+
+    
 }

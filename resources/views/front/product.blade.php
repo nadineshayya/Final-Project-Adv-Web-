@@ -59,15 +59,15 @@
 
                         @if($product->compare_price>0)
                      
-                        <h2 class="price text-secondary"><del>${{$product->price}}</del></h2>
+                        <h2 class="price text-secondary"><del>${{$product->compare_price}}</del></h2>
                         @endif
                         
-                        <h2 class="price ">${{$product->compare_price}}</h2>
+                        <h2 class="price ">${{$product->price}}</h2>
 
-                        {{$product->description}}
-                        <a href="javascript:void(0)" onclick="addToCart({{$product->id}})" class="btn btn-dark">
+                        {{$product->short_description}}
+                      <div>  <a href="javascript:void(0)" onclick="addToCart({{$product->id}})" class="btn btn-dark">
     <i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART
-</a>
+</a></div>
 
                     </div>
                 </div>
@@ -81,9 +81,7 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false">Shipping & Returns</button>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
-                            </li>
+                           
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
@@ -91,10 +89,7 @@
                             </div>
                             <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
                             {{$product->shipping_returns}}
-                            </div>
-                            {{$product->description}}
                             
-                            </div>
                         </div>
                     </div>
                 </div> 

@@ -167,6 +167,7 @@
     margin: 0;
     font-style: italic;
 }
+
 </style>
 
 
@@ -175,43 +176,43 @@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <picture>
-                    <source media="(max-width: 799px)" srcset="{{ asset('front-assets/images/carousel-1-m.jpg') }}" />
-                    <source media="(min-width: 800px)" srcset="{{ asset('front-assets/images/carousel-1.jpg') }}" />
-                    <img src="{{ asset('front-assets/images/carousel-1.jpg') }}" alt="" />
-                </picture>
-                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                    <div class="p-3">
-                        <h1 class="display-4 text-white mb-3">Kids Fashion</h1>
-                        <p class="mx-md-5 px-5">"Explore an enchanting range of kids' clothing designed for comfort and style!"</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="#">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <picture>
-                    <source media="(max-width: 799px)" srcset="{{ asset('front-assets/images/carousel-2-m.jpg') }}" />
-                    <source media="(min-width: 800px)" srcset="{{ asset('front-assets/images/carousel-2.jpg') }}" />
-                    <img src="{{ asset('front-assets/images/carousel-2.jpg') }}" alt="Carousel Image" />
+                    <source media="(max-width: 799px)" srcset="{{ asset('front-assets/images/Untitled design.png') }}" />
+                    <source media="(min-width: 800px)" srcset="{{ asset('front-assets/images/Untitled design.png') }}" />
+                    <img src="{{ asset('front-assets/images/Untitled design.png') }}" alt="" />
                 </picture>
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3">
                         <h1 class="display-4 text-white mb-3">Womens Fashion</h1>
                         <p class="mx-md-5 px-5">"Discover elegant and chic styles in our women’s fashion collection, tailored to elevate your look!"</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="#">Shop Now</a>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{route('front.shop')}}">Shop Now</a>
                     </div>
                 </div>
             </div>
             <div class="carousel-item">
                 <picture>
-                    <source media="(max-width: 799px)" srcset="{{ asset('front-assets/images/carousel-3-m.jpg') }}" />
-                    <source media="(min-width: 800px)" srcset="{{ asset('front-assets/images/carousel-3.jpg') }}" />
-                    <img src="{{ asset('front-assets/images/carousel-3.jpg') }}" alt="" />
+                    <source media="(max-width: 799px)" srcset="{{ asset('front-assets/images/Untitled design (1).png') }}" />
+                    <source media="(min-width: 800px)" srcset="{{ asset('front-assets/images/Untitled design (1).png') }}" />
+                    <img src="{{ asset('front-assets/images/Untitled design (1).png') }}" alt="Carousel Image" />
                 </picture>
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3">
-                        <h1 class="display-4 text-white mb-3">Shop Online at Flat 70% off on Branded Clothes</h1>
-                        <p class="mx-md-5 px-5">"Refresh your wardrobe with unbeatable deals on top brands – shop now and save big!</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="#">Shop Now</a>
+                        <h1 class="display-4 text-white mb-3">Mens Fashion</h1>
+                        <p class="mx-md-5 px-5">"Explore our new men's collection"</p>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{route('front.shop')}}">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <picture>
+                    <source media="(max-width: 799px)" srcset="{{ asset('front-assets/images/Untitled design (2).png') }}" />
+                    <source media="(min-width: 800px)" srcset="{{ asset('front-assets/images/Untitled design (2).png') }}" />
+                    <img src="{{ asset('front-assets/images/Untitled design (2).png') }}" alt="" />
+                </picture>
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                    <div class="p-3">
+                        <h1 class="display-4 text-white mb-3">Kids Fashion</h1>
+                        <p class="mx-md-5 px-5">"Explore an enchanting range of kids' clothing designed for comfort and style!"</p>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{route('front.shop')}}">Shop Now</a>
                     </div>
                 </div>
             </div>
@@ -287,20 +288,23 @@
                     @php
                         $productImage = $product->product_images ? $product->product_images->first() : null;
                     @endphp
-                    <div class="col-md-3">
-                        <div class="card product-card">
+                    <div class="col-md-3 d-flex">
+                        <div class="card product-card h-100">
                             <div class="product-image position-relative">
-                                <a href="{{route('front.product', $product ->slug)}}" class="product-img">
+                                <a href="{{route('front.product', $product->slug)}}" class="product-img">
                                     @if (!empty($productImage->image) && file_exists(public_path('images/products/' . $productImage->image)))
-                                        <img src="{{ asset('images/products/' . $productImage->image) }}" class="img-thumbnail" width="50">
+                                        <img src="{{ asset('images/products/' . $productImage->image) }}" class="img-thumbnail" width="50" >
                                     @else
                                         <span>No Image</span>
                                     @endif
                                 </a>
+                                <a href="javascript:void(0);" class="wishlist" onclick="addToWishlist({{ $product->id }})">
+                                    <i class="far fa-heart"></i>
+                                </a>
                                 <div class="product-action">
-                                    <a class="btn btn-dark" href="#">
-                                        <i class="fa fa-shopping-cart"></i> Add To Cart
-                                    </a>
+                                <a href="javascript:void(0)" onclick="addToCart({{$product->id}})" class="btn btn-dark">
+    <i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART
+</a>
                                 </div>
                             </div>
                             <div class="card-body text-center mt-3">
@@ -320,48 +324,53 @@
     </div>
 </section>
 
+
 <section class="section-4 pt-5">
-    <div class="container">
-        <div class="section-title">
-            Latest Products
-        </div>
-        <div class="row pb-3">
-            @if($latestproducts->isNotEmpty())
-                @foreach($latestproducts as $product)
-                    @php
-                        $productImage = $product->product_images ? $product->product_images->first() : null;
-                    @endphp
-                    <div class="col-md-3">
-                        <div class="card product-card">
-                            <div class="product-image position-relative">
-                                <a href="{{route('front.product', $product ->slug)}}" class="product-img">
-                                    @if (!empty($productImage->image) && file_exists(public_path('images/products/' . $productImage->image)))
-                                        <img src="{{ asset('images/products/' . $productImage->image) }}" class="img-thumbnail" width="50">
-                                    @else
-                                        <span>No Image</span>
-                                    @endif
+<div class="container">
+    <div class="section-title">
+        Latest Products
+    </div>
+    <div class="row pb-3">
+        @if($latestproducts->isNotEmpty())
+            @foreach($latestproducts as $product)
+                @php
+                    $productImage = $product->product_images ? $product->product_images->first() : null;
+                @endphp
+                <div class="col-md-3">
+                    <div class="card product-card">
+                        <div class="product-image position-relative">
+                            <a href="{{ route('front.product', $product->slug) }}" class="product-img">
+                                @if (!empty($productImage->image) && file_exists(public_path('images/products/' . $productImage->image)))
+                                    <img src="{{ asset('images/products/' . $productImage->image) }}" class="img-thumbnail" width="50">
+                                @else
+                                    <span>No Image</span>
+                                @endif
+                            </a>
+                            <a href="javascript:void(0);" class="wishlist" onclick="addToWishlist({{ $product->id }})">
+                                    <i class="far fa-heart"></i>
                                 </a>
-                                <div class="product-action">
-                                    <a class="btn btn-dark" href="#">
-                                        <i class="fa fa-shopping-cart"></i> Add To Cart
-                                    </a>
-                                </div>
+                            <div class="product-action">
+                            <a href="javascript:void(0)" onclick="addToCart({{$product->id}})" class="btn btn-dark">
+    <i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART
+</a>
                             </div>
-                            <div class="card-body text-center mt-3">
-                                <a class="h6 link" href="product.php">{{$product->title}}</a>
-                                <div class="price mt-2">
-                                    <span class="h5"><strong>{{$product->price}}</strong></span>
-                                    @if($product->compare_price > 0)
-                                        <span class="h6 text-underline"><del>{{$product->compare_price}}</del></span>
-                                    @endif
-                                </div>
+                        </div>
+                        <div class="card-body text-center mt-3">
+                            <a class="h6 link" href="product.php">{{ $product->title }}</a>
+                            <div class="price mt-2">
+                                <span class="h5"><strong>${{ $product->price }}</strong></span>
+                                @if($product->compare_price > 0)
+                                    <span class="h6 text-underline"><del>${{ $product->compare_price }}</del></span>
+                                @endif
                             </div>
                         </div>
                     </div>
-                @endforeach
-            @endif
-        </div>
+                </div>
+            @endforeach
+        @endif
     </div>
+</div>
+
 
 <!-- Customer Reviews Section -->
 <div class="customer-reviews-section">
@@ -407,4 +416,60 @@
 
 
 </section>
+@endsection
+@section('customJs')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>function addToWishlist(productId) {
+    $.ajax({
+        url: '{{ route("front.addToWishlist") }}',
+        type: 'POST',
+        data: {
+            product_id: productId,
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            if (response.status) {
+                alert(response.message);
+               
+
+            } else {
+                alert(response.message);
+                window.location.href = "{{ route('account.login') }}";
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('Error while adding product to wishlist.');
+        }
+    });
+}
+
+   function addToCart(productId) {
+    // Make AJAX request to the server to add the product to the cart
+    $.ajax({
+        url: '{{route("front.addToCart")}}',  // Assuming your add to cart route is '/cart'
+        type: 'POST',
+        data: {
+            product_id: productId,
+            _token: '{{ csrf_token() }}'  // Include CSRF token for security
+        },
+        success: function(response) {
+            // Handle success response
+            if (response.status) {
+                // Update the cart count or any other element if needed
+                alert(response.message);  // You can show a success message
+               window.location.href= "{{route('front.cart')}}"
+            } else {
+                alert(response.message);  // Show error message if product could not be added
+            }
+        },
+        error: function(xhr, status, error) {
+            // Handle error response
+            console.error('Error:', error);
+            alert('There was an error while adding the product to the cart.');
+        }
+    });
+}
+
+
+</script>
 @endsection

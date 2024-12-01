@@ -19,28 +19,29 @@
             </a>
         </li>
         <li class="nav-item mb-3">
+            <a class="nav-link d-flex align-items-center text-light" href="{{ route('sub-categories.index') }}" 
+               style="font-size: 1rem; padding: 10px 15px; border-radius: 8px; transition: background 0.3s;">
+                <i class="fas fa-file-alt me-3" style="font-size: 1.2rem;"></i> Sub Categories
+            </a>
+        </li>
+        <li class="nav-item mb-3">
             <a class="nav-link d-flex align-items-center text-light" href="{{ route('products.index') }}" 
                style="font-size: 1rem; padding: 10px 15px; border-radius: 8px; transition: background 0.3s;">
                 <i class="fas fa-tag me-3" style="font-size: 1.2rem;"></i> Products
             </a>
         </li>
         <li class="nav-item mb-3">
-            <a class="nav-link d-flex align-items-center text-light" href="orders.html" 
+            <a class="nav-link d-flex align-items-center text-light" href="{{route('orders.order')}}" 
                style="font-size: 1rem; padding: 10px 15px; border-radius: 8px; transition: background 0.3s;">
                 <i class="fas fa-shopping-bag me-3" style="font-size: 1.2rem;"></i> Orders
             </a>
         </li>
         <li class="nav-item mb-3">
-            <a class="nav-link d-flex align-items-center text-light" href="users.html" 
+            <a class="nav-link d-flex align-items-center text-light" href="{{route('users.index')}}" 
                style="font-size: 1rem; padding: 10px 15px; border-radius: 8px; transition: background 0.3s;">
                 <i class="fas fa-users me-3" style="font-size: 1.2rem;"></i> Users
             </a>
         </li>
-        <li class="nav-item mb-3">
-            <a class="nav-link d-flex align-items-center text-light" href="pages.html" 
-               style="font-size: 1rem; padding: 10px 15px; border-radius: 8px; transition: background 0.3s;">
-                <i class="far fa-file-alt me-3" style="font-size: 1.2rem;"></i> Pages
-            </a>
-        </li>
+       
     </ul>
 </div>

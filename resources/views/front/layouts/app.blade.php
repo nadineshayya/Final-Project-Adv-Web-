@@ -14,6 +14,44 @@
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
 
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="pinterest" content="nopin" />
+
+	<meta property="og:locale" content="en_AU" />
+	<meta property="og:type" content="website" />
+	<meta property="fb:admins" content="" />
+	<meta property="fb:app_id" content="" />
+	<meta property="og:site_name" content="" />
+	<meta property="og:title" content="" />
+	<meta property="og:description" content="" />
+	<meta property="og:url" content="" />
+	<meta property="og:image" content="" />
+	<meta property="og:image:type" content="image/jpeg" />
+	<meta property="og:image:width" content="" />
+	<meta property="og:image:height" content="" />
+	<meta property="og:image:alt" content="" />
+
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:site" content="" />
+	<meta name="twitter:description" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:image:alt" content="" />
+	<meta name="twitter:card" content="summary_large_image" />
+	
+
+	<link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/slick.css')}}" />
+	<link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/slick-theme.css')}}" />
+	<link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/video-js.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/style.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/ion.rangeSlider.min')}}" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;500&family=Raleway:ital,wght@0,400;0,600;0,800;1,200&family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+	<!-- Fav Icon -->
+	<link rel="shortcut icon" type="image/x-icon" href="#" />
+	<meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" type="text/css" href="{{asset('front-assets/css/style.css')}}" />
     <style>
 
@@ -71,7 +109,7 @@
     <div class="container">
         <div class="row align-items-center py-3 d-none d-lg-flex justify-content-between">
 		<div class="col-lg-4 logo text-center">
-    		<a href="index.php" class="text-decoration-none">
+    		<a href="{{route('front.home')}}" class="text-decoration-none">
         <span class="h1 text-uppercase text-outline">Thread</span>
         <span class="h1 text-uppercase text-trend">& Trend</span>
    			 </a>
@@ -79,12 +117,25 @@
 		</div>
 
             <div class="col-lg-6 search-cart-container">
-                <form action="" class="input-group">
-                    <input type="text" placeholder="Search For Products" class="form-control">
-                    <span class="input-group-text">
-                        <i class="fas fa-search"></i>
-                    </span>
-                </form>
+            <a href="{{route('account.profile')}}" class="nav-link text-dark">My Account</a>
+            <form action="{{route('front.shop')}}">					
+					<div class="input-group">
+					<form action="{{ route('front.shop') }}" method="GET" class="input-group">
+    <input 
+        type="text" 
+        name="search" 
+        value="{{ request('search') }}" 
+        placeholder="Search For Products" 
+        class="form-control"
+        aria-label="Search"
+    />
+    <button type="submit" class="input-group-text">
+        <i class="fa fa-search"></i>
+    </button>
+</form>
+
+					</div>
+				</form>
                 <div class="right-nav">
                     <a href="{{route('front.cart')}}">
                         <i class="fas fa-shopping-cart"></i>
@@ -109,21 +160,25 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <!-- Dynamic Categories -->
                     @if(getCategories()->isNotEmpty())
-                        @foreach(getCategories() as $category)
-                            <li class="nav-item dropdown">
-                                <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown">
-                                    {{$category->name}}
-                                </button>
-                                @if(optional($category->sub_category)->isNotEmpty())
-                                    <ul class="dropdown-menu">
-                                        @foreach($category->sub_category as $subCategory)
-                                            <li><a class="dropdown-item" href="#">{{$subCategory->name}}</a></li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                            </li>
-                        @endforeach
-                    @endif
+    @foreach(getCategories() as $category)
+        <li class="nav-item dropdown">
+            <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" style="color: #003366;">
+                {{$category->name}}
+            </button>
+            @if(optional($category->sub_category)->isNotEmpty())
+                <ul class="dropdown-menu">
+                    @foreach($category->sub_category as $subCategory)
+                        <li><a class="dropdown-item" href="#" style="color: #003366;">{{$subCategory->name}}</a></li>
+                    @endforeach
+                </ul>
+            @endif
+        </li>
+        
+    @endforeach
+@endif
+
+
+
                 </ul>
             </div>
         </nav>
@@ -149,10 +204,10 @@
             <div class="col-6 col-md-3">
                 <h6 style="color: #2c3e50; font-weight: 600; font-size: 1rem; margin-bottom: 1rem;">Explore</h6>
                 <ul class="list-unstyled" style="padding: 0; margin: 0;">
-                    <li><a href="#" style="color: #2c3e50; text-decoration: none;">Home</a></li>
-                    <li><a href="#" style="color: #2c3e50; text-decoration: none;">Profile</a></li>
-                    <li><a href="#" style="color: #2c3e50; text-decoration: none;">Shop</a></li>
-                    <li><a href="#" style="color: #2c3e50; text-decoration: none;">Cart</a></li>
+                    <li><a href="{{route('front.home')}}" style="color: #2c3e50; text-decoration: none;">Home</a></li>
+                    <li><a href="{{route('account.profile')}}" style="color: #2c3e50; text-decoration: none;">Profile</a></li>
+                    <li><a href="{{route('front.shop')}}" style="color: #2c3e50; text-decoration: none;">Shop</a></li>
+                    <li><a href="{{route('front.cart')}}" style="color: #2c3e50; text-decoration: none;">Cart</a></li>
                 </ul>
             </div>
 
@@ -160,9 +215,9 @@
             <div class="col-6 col-md-3">
                 <h6 style="color: #2c3e50; font-weight: 600; font-size: 1rem; margin-bottom: 1rem;">About</h6>
                 <ul class="list-unstyled" style="padding: 0; margin: 0;">
-                    <li><a href="#" style="color: #2c3e50; text-decoration: none;">Our Story</a></li>
-                    <li><a href="#" style="color: #2c3e50; text-decoration: none;">Contact Us</a></li>
-                    <li><a href="#" style="color: #2c3e50; text-decoration: none;">Location</a></li>
+                    <li><a href="{{route('front.aboutus')}}" style="color: #2c3e50; text-decoration: none;">Our Story</a></li>
+                    <li><a href="{{route('front.contactus')}}" style="color: #2c3e50; text-decoration: none;">Contact Us</a></li>
+                    <li><a href="{{route('front.contactus')}}" style="color: #2c3e50; text-decoration: none;">Location</a></li>
                 </ul>
             </div>
 
@@ -194,10 +249,40 @@
     </div>
 </footer>
 
+<script src="{{ asset('front-assets/js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ asset('front-assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
+<script src="{{ asset('front-assets/js/instantpages.5.1.0.min.js') }}"></script>
+<script src="{{ asset('front-assets/js/lazyload.17.6.0.min.js') }}"></script>
+<script src="{{ asset('front-assets/js/slick.min.js') }}"></script>
+<script src="{{ asset('front-assets/js/ion.rangeSlider.min.js') }}"></script>
+
+<script src="{{ asset('front-assets/js/custom.js') }}"></script>
+<script>
+window.onscroll = function() {myFunction()};
+
+var navbar = document.getElementById("navbar");
+var sticky = navbar.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky")
+  } else {
+    navbar.classList.remove("sticky");
+  }
+};
+$.ajaxSetup({
+	headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+});
+
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 
 
-<script src="{{asset('front-assets/js/jquery-3.6.0.min.js')}}"></script>
+
 <script src="{{asset('front-assets/js/bootstrap.bundle.min.js')}}"></script>
 @yield('customJs')
 </body>

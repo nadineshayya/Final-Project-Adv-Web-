@@ -62,10 +62,11 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), $rules);
     
         if ($validator->fails()) {
-            \Log::debug('Validation failed', $validator->errors()->toArray());
-            return response()->json(['status' => false, 'errors' => $validator->errors()]);
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
         }
-    
         try {
             $product = new Product();
             $product->title = $request->title;
@@ -158,18 +159,18 @@ class ProductController extends Controller
             return response()->json(['status' => false, 'message' => 'Product not found']);
         }
     
+        // Adjust the value for `track_qty` if the checkbox is unchecked
         $request->merge(['track_qty' => $request->has('track_qty') ? 'Yes' : 'No']);
     
         $rules = [
             'title' => 'required',
-            'slug' => 'required|unique:products,slug,' . $product->id . ',id',
+            'slug' => 'required|unique:products,slug,' . $product->id . ',id', // Exclude current slug
             'price' => 'required|numeric',
-            'sku' => 'required|unique:products,sku,' . $product->id . ',id',
+            'sku' => 'required|unique:products,sku,' . $product->id . ',id', // Allow same SKU for the current product
             'track_qty' => 'required|in:Yes,No',
             'category' => 'required|numeric',
             'is_featured' => 'required|in:Yes,No',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-             // Image validation
         ];
     
         if ($request->track_qty === 'Yes') {
@@ -190,7 +191,7 @@ class ProductController extends Controller
             $product->description = $request->description;
             $product->price = $request->price;
             $product->compare_price = $request->compare_price;
-            $product->sku = $request->sku;
+            $product->sku = $request->sku; // Allow unchanged SKU
             $product->barcode = $request->barcode;
             $product->track_qty = $request->track_qty;
             $product->qty = $request->track_qty === 'Yes' ? $request->qty : null;
