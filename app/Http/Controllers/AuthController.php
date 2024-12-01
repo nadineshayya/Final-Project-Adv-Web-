@@ -153,5 +153,37 @@ public function orderDetail($id)
     // Return the view
     return view('front.account.order-details', $data);
 }
+public function changePass(Request $request){
+    $validator = Validator::make($request->all(),[
+        'old-password'=>'required',
+        'new_password' =>'required|min:5',
+        'confirm_password'=>'required|same:new_password',
+    ]);
 
+    if($validator->passes()){
+        $user = User::select('id','password')->where('id', Auth::user()->id)->first();
+        if(Hash::Check($request->old_password, $user->password)){
+            session()->flash('error', 'Your old password is incorrect, please try again');
+
+            return response()->json([
+                'status'=>true,
+            ]);
+        }
+
+        User::where('id', $user->id)->update([
+            'password'=>Hash::make($request->new_password)
+        ]);
+        session()->flash('success', 'Your password is updated');
+
+    }else{
+        return response()->json([
+            'status'=> false,
+            'errors'=>$validator->errors()
+        ]);
+    }
+
+}
+public function changePassword(){
+return view('front.account.changePassword');
+}
 }

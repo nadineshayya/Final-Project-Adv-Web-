@@ -64,6 +64,7 @@
 @endsection
 
 @section('customJs')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $("#changeForm").submit(function (e) {
         e.preventDefault();
@@ -91,29 +92,29 @@
         // If form is valid, proceed with AJAX
         if (isValid) {
             $.ajax({
-                url: '{{route("account.changePass")}}',
-                type: 'post',
-                data: $(this).serializeArray(),
+                url: '{{ route("account.changePass") }}', // Correct route for the POST request
+                type: 'POST',
+                data: $(this).serialize(), // Serialize form data
                 dataType: 'json',
                 headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token
-        },
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token
+                },
                 success: function (response) {
                     if (response.status === true) {
-                        window.location.href="{{route('front.account.changePassword')}}"
                         alert('Password changed successfully.');
-                        window.location.reload();
+                        window.location.href = "{{ route('front.account.changePassword') }}"; // Redirect after success
                     } else {
+                        // Handle validation errors or other response messages
                         $(".error-message").remove();  // Clear previous error messages
 
-if (response.errors) {
-    $.each(response.errors, function(field, message) {
-        $("#" + field).after("<div class='error-message text-danger'>" + message + "</div>");
-    });
-} else if (response.message) {
-    // This handles the case when the old password is incorrect, etc.
-    alert(response.message);
-}
+                        if (response.errors) {
+                            $.each(response.errors, function (field, message) {
+                                $("#" + field).after("<div class='error-message text-danger'>" + message + "</div>");
+                            });
+                        } else if (response.message) {
+                            // This handles the case when the old password is incorrect, etc.
+                            alert(response.message);
+                        }
                     }
                 },
                 error: function (xhr) {
@@ -124,4 +125,5 @@ if (response.errors) {
         }
     });
 </script>
+
 @endsection

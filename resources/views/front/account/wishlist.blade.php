@@ -25,47 +25,40 @@
                             <h2 class="h5 mb-0 pt-2 pb-2">My Wishlist</h2>
                         </div>
                         <div class="card-body p-4">
-                            @if($wishlists->isNotEmpty() )
-                          
-                            @foreach($wishlists as $wishlist)
-
-                            <div class="d-sm-flex justify-content-between mt-lg-4 mb-4 pb-3 pb-sm-2 border-bottom"    id="wishlist-item-{{ $wishlist->product ? $wishlist->product->id : 'default-id' }}">
-    <div class="d-block d-sm-flex align-items-start text-center text-sm-start">
-        <a class="d-block flex-shrink-0 mx-auto me-sm-4" href="#" style="width: 10rem;"> 
-            @php
-                $productImage = \App\Models\ProductImage::where('product_id', $wishlist->product_id)->first();
-            @endphp
-            @if (!empty($productImage->image) && file_exists(public_path('images/products/' . $productImage->image)))
-                <img src="{{ asset('images/products/' . $productImage->image) }}" class="img-fluid" width="50">
-            @else
-                <span>No Image</span>
-            @endif
-        </a>
-        <div class="pt-2">
-            <h3 class="product-title fs-base mb-2">
-                <a href="{{ $wishlist->product ? route('front.product', $wishlist->product->slug) : '#' }}">
-                {{ $wishlist->product ? $wishlist->product->title : 'Default Title' }}
+                        @foreach($wishlists as $wishlist)
+    @if($wishlist->product) <!-- Only render if product exists -->
+        <div class="d-sm-flex justify-content-between mt-lg-4 mb-4 pb-3 pb-sm-2 border-bottom" id="wishlist-item-{{ $wishlist->product->id }}">
+            <div class="d-block d-sm-flex align-items-start text-center text-sm-start">
+                <a class="d-block flex-shrink-0 mx-auto me-sm-4" href="#" style="width: 10rem;"> 
+                    @php
+                        $productImage = \App\Models\ProductImage::where('product_id', $wishlist->product_id)->first();
+                    @endphp
+                    @if (!empty($productImage->image) && file_exists(public_path('images/products/' . $productImage->image)))
+                        <img src="{{ asset('images/products/' . $productImage->image) }}" class="img-fluid" width="50">
+                    @else
+                        <span>No Image</span>
+                    @endif
                 </a>
-            </h3>
-            <div class="fs-lg text-accent pt-2">
-            {{ optional($wishlist->product)->price ?? 'Default Price' }}
-
+                <div class="pt-2">
+                    <h3 class="product-title fs-base mb-2">
+                        <a href="{{ route('front.product', $wishlist->product->slug) }}">
+                            {{ $wishlist->product->title }}
+                        </a>
+                    </h3>
+                    <div class="fs-lg text-accent pt-2">
+                        {{ $wishlist->product->price }}
+                    </div>
+                </div>
+            </div>
+            <div class="pt-2 ps-sm-3 mx-auto mx-sm-0 text-center">
+                <button class="btn btn-outline-danger btn-sm" type="button" onclick="removeFromWishlist({{ $wishlist->product->id }})">
+                    <i class="fas fa-trash-alt me-2"></i>Remove
+                </button>
             </div>
         </div>
-    </div>
-    <div class="pt-2 ps-sm-3 mx-auto mx-sm-0 text-center">
-        <divid="wishlist-item-{{ $wishlist->product ? $wishlist->product->id : 'default-id' }}" 
-         class="wishlist-item">
-            <button class="btn btn-outline-danger btn-sm" type="button" onclick="removeFromWishlist({{ $wishlist->product ? $wishlist->product->id : 'default-id' }})">
-                <i class="fas fa-trash-alt me-2"></i>Remove
-            </button>
-        </div>
-    </div>
-</div>
+    @endif
+@endforeach
 
-                          @endforeach
-                          
-                            @endif
                        
                     </div>
                 </div>
