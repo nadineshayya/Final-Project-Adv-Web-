@@ -219,33 +219,25 @@ class ProductController extends Controller
 
 
     public function destroy($id)
-{
-    try {
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json(['error' => 'Product not found'], 404);
-        }
-
-        $imagePath = public_path('uploads/products/' . $product->image);
-        if (File::exists($imagePath)) {
-            if (!File::delete($imagePath)) {
-                return response()->json(['error' => 'Failed to delete the image'], 500);
+    {
+        \Log::info("Attempting to delete product with ID: $id");
+    
+        try {
+            $product = Product::find($id);
+            if (!$product) {
+                return response()->json(['error' => 'Product not found'], 404);
             }
+    
+            // Image and product deletion logic...
+    
+            \Log::info("Product with ID: $id deleted successfully");
+            return response()->json(['success' => 'Product deleted successfully'], 200);
+        } catch (\Exception $e) {
+            \Log::error('Error deleting product: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        if (!$product->delete()) {
-            return response()->json(['error' => 'Failed to delete the product'], 500);
-        }
-
-        return response()->json(['success' => 'Product deleted successfully'], 200);
-    } catch (\Exception $e) {
-        // Log the error and return the exception message for debugging
-        \Log::error($e->getMessage());
-        return response()->json(['error' => $e->getMessage()], 500);
     }
-}
-
+    
 
 
 

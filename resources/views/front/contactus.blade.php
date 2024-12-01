@@ -123,8 +123,4 @@
         }
     });
 </script>
-<<<<<<< HEAD
 @endsection
-=======
-@endsection
->>>>>>> d6de60f91cebdf81650c28accbae90a6fd9e543f

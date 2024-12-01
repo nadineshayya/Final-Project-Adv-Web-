@@ -17,10 +17,6 @@
 }
 </style>
 @section('content')
-<<<<<<< HEAD
-
-@endsection
-=======
 <main>
     <section class="section-5 pt-3 pb-3 mb-3 bg-white">
         <div class="container">
@@ -124,4 +120,3 @@
     </section>
 </main>
 @endsection
->>>>>>> d6de60f91cebdf81650c28accbae90a6fd9e543f

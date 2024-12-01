@@ -47,13 +47,7 @@
 
                     <!-- Image Upload -->
                     <div class="col-12">
-                        <label for="image-upload" class="form-label">Upload Image</label>
-                        <div class="dropzone border rounded p-3 bg-light" id="image-upload">
-                            <div class="dz-message needsclick">
-                                Drag and drop files here or click to upload.
-                            </div>
-                        </div>
-                        <input type="hidden" id="image_id" name="image_id" value="">
+                      
                     </div>
 
                     <!-- Gallery Preview -->

@@ -249,7 +249,7 @@
             <div class="col-lg-3">
                 <div class="box shadow-lg">
                     <div class="fa icon fa-shipping-fast text-dark m-0 mr-3"></div>
-                    <h2 class="font-weight-semi-bold m-0">Free Shipping</h2>
+                    <h2 class="font-weight-semi-bold m-0">Fast Shipping</h2>
                 </div>
             </div>
             <div class="col-lg-3">

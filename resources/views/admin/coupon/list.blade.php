@@ -153,9 +153,9 @@
 @section('customJs')
 <script>
     function deleteCategory(id) {
-        const url = '{{ route("categories.destroy", ":id") }}'.replace(':id', id);
+        const url = '{{ route("coupon.destroy", ":id") }}'.replace(':id', id);
 
-        if (confirm("Are you sure you want to delete this category?")) {
+        if (confirm("Are you sure you want to delete this coupon code?")) {
             $.ajax({
                 url: url,
                 type: 'DELETE',
@@ -166,12 +166,12 @@
                     if (response.status) {
                         location.reload();
                     } else {
-                        alert('Failed to delete the category. Please try again.');
+                        alert('Failed to delete the coupon code. Please try again.');
                     }
                 },
                 error: function(xhr) {
                     console.error(xhr.responseText);
-                    alert('An error occurred. Unable to delete the category.');
+                    alert('An error occurred. Unable to delete the coupon code.');
                 }
             });
         }

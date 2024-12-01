@@ -130,9 +130,7 @@ class DiscountCodeController extends Controller
         ]);
     }
 
-    public function destroy(){
-        
-    }
+    
     public function applyDiscount(Request $request)
     {
         $code = DiscountCoupon::where('code', $request->code)->first();
@@ -167,6 +165,21 @@ class DiscountCodeController extends Controller
         ]);
     }
     
+    public function destroy($id)
+{
+    // Find the coupon by its ID
+    $coupon = DiscountCoupon::findOrFail($id);
+
+    // Delete the coupon
+    $coupon->delete();
+
+    // Return success response
+    return response()->json([
+        'status' => true,
+        'message' => 'Coupon deleted successfully!',
+    ]);
+}
+
 
 
     

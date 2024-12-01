@@ -7,7 +7,7 @@
     </div>
     <ul class="nav flex-column">
         <li class="nav-item mb-3">
-            <a class="nav-link d-flex align-items-center text-light" href="#" 
+            <a class="nav-link d-flex align-items-center text-light" href="{{route('admin.dashboard')}}" 
                style="font-size: 1rem; padding: 10px 15px; border-radius: 8px; transition: background 0.3s;">
                 <i class="fas fa-tachometer-alt me-3" style="font-size: 1.2rem;"></i> Dashboard
             </a>

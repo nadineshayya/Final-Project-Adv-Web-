@@ -4,7 +4,7 @@
     <!-- Dashboard Heading -->
     <div class="dashboard-heading-container">
         <div class="profile-container">
-            <img src="{{ asset('images/dashboard profile.png') }}" alt="Admin Profile" class="profile-icon">
+          
             <div class="admin-info">
                 <h4>Admin</h4>
             </div>
@@ -19,7 +19,7 @@
                 <div class="small-box card-container bg-blue-1">
                     <h3>150</h3>
                     <p>Total Orders</p>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{route('orders.order')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- Total Customers Card -->
@@ -27,7 +27,7 @@
                 <div class="small-box card-container bg-blue-2">
                     <h3>50</h3>
                     <p>Total Customers</p>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{route('users.index')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- Total Sale Card -->

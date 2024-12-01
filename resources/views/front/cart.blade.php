@@ -282,10 +282,7 @@
                     <p>Shipping <span>${{ $shipping }}</span></p>
                    
                 </div>
-                <div class="promo-code">
-                    <input type="text" placeholder="Enter your code">
-                    <button>Apply</button>
-                </div>
+                
                 <a href="{{ route('front.checkout') }}" class="checkout-btn">Checkout</a>
             </div>
         </div>

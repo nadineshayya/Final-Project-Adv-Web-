@@ -27,26 +27,36 @@ class AuthController extends Controller
     ]);
 
     if ($validator->fails()) {
-        // Return validation errors with input back to the form
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ]);
+        }
+
         return redirect()
             ->back()
             ->withErrors($validator)
             ->withInput($request->all());
     }
-    
 
-    // Create and save the user
+    // Create and save the user with default role
     $user = new User;
     $user->name = $request->name;
     $user->email = $request->email;
     $user->phone = $request->phone;
     $user->password = Hash::make($request->password);
+    $user->role = 2; // Set the default role
     $user->save();
 
-    // Flash success message
-    session()->flash('success', 'You have been registered successfully.');
+    if ($request->ajax()) {
+        return response()->json([
+            'status' => true,
+            'message' => 'Registration successful.',
+        ]);
+    }
 
-    // Redirect to the login page
+    session()->flash('success', 'You have been registered successfully.');
     return redirect()->route('account.login');
 }
 

@@ -149,7 +149,7 @@
 <header class="bg-primary">
     <div class="container">
         <nav class="navbar navbar-expand-xl" id="navbar">
-            <a href="index.php" class="text-decoration-none mobile-logo">
+            <a href="{{route('front.home')}}" class="text-decoration-none mobile-logo">
                 <span class="h2 text-uppercase text-outline">Thread</span>
                 <span class="h2 text-uppercase text-white">& Trend</span>
             </a>
@@ -168,7 +168,7 @@
             @if(optional($category->sub_category)->isNotEmpty())
                 <ul class="dropdown-menu">
                     @foreach($category->sub_category as $subCategory)
-                        <li><a class="dropdown-item" href="#" style="color: #003366;">{{$subCategory->name}}</a></li>
+                        <li><a class="dropdown-item"  href="{{ route('front.shop', ['categorySlug' => $category->slug, 'subCategorySlug' => $subCategory->slug]) }}"  style="color: #003366;">{{$subCategory->name}}</a></li>
                     @endforeach
                 </ul>
             @endif

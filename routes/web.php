@@ -17,10 +17,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\admin\DiscountCodeController;
 use App\Http\Controllers\admin\OrderController;
 
+
 Route::get('/', [Frontcontroller::class,'index'])->name('front.home');
 Route::get('/about-us', [Frontcontroller::class,'aboutus'])->name('front.aboutus');
 Route::get('/contact-us', [Frontcontroller::class,'contactus'])->name('front.contactus');
-Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class,'index'])->name('front.shop');
+Route::get('/shop/{categorySlug?}/{subCategorySlug?}', [ShopController::class, 'index'])->name('front.shop');
+
 Route::get('/product/{slug}', [ShopController::class,'product'])->name('front.product');
 Route::get('/cart', [CartController::class,'cart'])->name('front.cart');
 Route::post('/add-to-cart', [CartController::class,'addToCart'])->name('front.addToCart');
@@ -44,7 +46,7 @@ Route::group(['prefix' => 'account'], function() {
       
     });
     Route::group(['middleware' => 'auth'], function () {
-        Route::get('/profile', [AuthController::class, 'profile'])->name('account.profile'); 
+       
         Route::get('/myorder', [AuthController::class, 'order'])->name('front.account.orders'); 
         Route::get('/order-details/{id}', [AuthController::class, 'orderDetail'])->name('front.account.order-details'); 
         Route::get('/mywishlist', [FrontController::class, 'whishlist'])->name('front.account.whishlist'); 
@@ -102,7 +104,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
         
-        Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+        Route::delete('admin/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::get('/get-products', [ProductController::class,'getPorducts'])->name('products.getPorducts');
 
         Route::post('/product-images/update', [ProductImageController::class, 'update'])->name('product-images.update');
@@ -113,6 +115,7 @@ Route::group(['prefix' => 'admin'], function() {
         Route::post('/coupon/store', [DiscountCodeController::class, 'store'])->name('coupon.store');
         Route::get('/coupon', [DiscountCodeController::class, 'index'])->name('coupon.index');
         Route::get('/coupon/edit/{id}', [DiscountCodeController::class, 'edit'])->name('coupon.edit');
+        Route::get('/coupon/{id}', [DiscountCodeController::class, 'destroy'])->name('coupon.destroy');
         Route::post('/coupon/update/{id}', [DiscountCodeController::class, 'update'])->name('coupon.update');
      
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

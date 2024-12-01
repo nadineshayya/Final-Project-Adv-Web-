@@ -59,7 +59,8 @@ class Authenticate implements AuthenticatesRequest
     protected function redirectTo($request)
     {
         if (!$request->expectsJson()) {
-            return route('login');
+            return route('account.login'); // Or route('admin.login') based on context
         }
     }
+    
 }
