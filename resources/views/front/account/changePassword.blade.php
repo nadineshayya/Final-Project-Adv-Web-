@@ -66,64 +66,56 @@
 @section('customJs')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $("#changeForm").submit(function (e) {
-        e.preventDefault();
+   $("#changeForm").submit(function (e) {
+    e.preventDefault();
 
-        // Clear previous error messages
-        $(".text-danger").addClass('d-none');
+    // Clear previous error messages
+    $(".text-danger").addClass('d-none');
+    $(".error-message").remove();
 
-        // Initialize form validity flag
-        let isValid = true;
+    // Validate fields
+    let isValid = true;
 
-        // Validate fields
-        if ($("#old_password").val().trim() === "") {
-            $("#old_password_error").removeClass('d-none');
-            isValid = false;
-        }
-        if ($("#new_password").val().trim() === "") {
-            $("#new_password_error").removeClass('d-none');
-            isValid = false;
-        }
-        if ($("#confirm_password").val().trim() === "") {
-            $("#confirm_password_error").removeClass('d-none');
-            isValid = false;
-        }
+    if ($("#old_password").val().trim() === "") {
+        $("#old_password_error").removeClass('d-none');
+        isValid = false;
+    }
+    if ($("#new_password").val().trim() === "") {
+        $("#new_password_error").removeClass('d-none');
+        isValid = false;
+    }
+    if ($("#confirm_password").val().trim() === "") {
+        $("#confirm_password_error").removeClass('d-none');
+        isValid = false;
+    }
 
-        // If form is valid, proceed with AJAX
-        if (isValid) {
-            $.ajax({
-                url: '{{ route("account.changePass") }}', // Correct route for the POST request
-                type: 'POST',
-                data: $(this).serialize(), // Serialize form data
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF Token
-                },
-                success: function (response) {
-                    if (response.status === true) {
-                        alert('Password changed successfully.');
-                        window.location.href = "{{ route('front.account.changePassword') }}"; // Redirect after success
-                    } else {
-                        // Handle validation errors or other response messages
-                        $(".error-message").remove();  // Clear previous error messages
-
-                        if (response.errors) {
-                            $.each(response.errors, function (field, message) {
-                                $("#" + field).after("<div class='error-message text-danger'>" + message + "</div>");
-                            });
-                        } else if (response.message) {
-                            // This handles the case when the old password is incorrect, etc.
-                            alert(response.message);
-                        }
-                    }
-                },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                    alert('An error occurred. Please try again later.');
+    // Submit form via AJAX if valid
+    if (isValid) {
+        $.ajax({
+            url: '{{ route("account.changePass") }}',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (response) {
+                if (response.status) {
+                    alert(response.message);
+                    window.location.href = "{{ route('front.account.changePassword') }}";
+                } else if (response.errors) {
+                    $.each(response.errors, function (field, message) {
+                        $("#" + field).after("<div class='error-message text-danger'>" + message + "</div>");
+                    });
+                } else if (response.message) {
+                    alert(response.message);
                 }
-            });
-        }
-    });
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                alert('An error occurred. Please try again later.');
+            }
+        });
+    }
+});
+
 </script>
 
 @endsection
